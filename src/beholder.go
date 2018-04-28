@@ -3,6 +3,7 @@ package beholder
 import (
 	"bufio"
 	"os"
+	"sort"
 
 	"github.com/mitchellh/go-homedir"
 )
@@ -30,6 +31,11 @@ type App struct {
 	// internal state:
 	entities []Entity
 	loaded   bool
+}
+
+type scoredEntity struct {
+	Entity
+	score float32
 }
 
 // NewApp creates a new App
@@ -70,13 +76,21 @@ func NewApp() (*App, error) {
 	return app, nil
 }
 
+// NewAppWithEntities is a Factory that's convenient for testing
+func NewAppWithEntities(entities []Entity) *App {
+	return &App{
+		entities: entities,
+	}
+}
+
 // Query attempts to find Entities that match the query
 func (a *App) Query(query string) []Entity {
 	qm := NewQueryMatcher(query)
-	results := make([]Entity, 0, queryLimit)
+	results := make([]*scoredEntity, 0, queryLimit)
 	for _, e := range a.entities {
-		if qm.Matches(e.GetName()) {
-			results = append(results, e)
+		m := qm.Match(e.GetName())
+		if m.Matched {
+			results = append(results, &scoredEntity{e, m.Score})
 
 			if len(results) >= queryLimit {
 				break
@@ -84,9 +98,18 @@ func (a *App) Query(query string) []Entity {
 		}
 	}
 
-	// TODO score results
+	// score results
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].score > results[j].score
+	})
 
-	return results
+	// copy the sorted Entities
+	scored := make([]Entity, 0, len(results))
+	for _, se := range results {
+		scored = append(scored, se.Entity)
+	}
+
+	return scored
 }
 
 func loadEntities() ([]Entity, error) {
