@@ -17,6 +17,8 @@ func main() {
 	tapp := tview.NewApplication().
 		SetRoot(root, true)
 
+	app.Quit = tapp.Stop
+
 	if err := tapp.Run(); err != nil {
 		panic(err)
 	}

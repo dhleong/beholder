@@ -29,6 +29,13 @@ func NewInputUI(app *beholder.App) *InputUI {
 	input.SetFieldTextColor(tcell.ColorDefault)
 
 	input.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
+		switch ev.Key() {
+		case tcell.KeyESC:
+			if input.GetText() != "" {
+				input.SetText("")
+				return nil
+			}
+		}
 		return ui.KeyHandler(ev)
 	})
 

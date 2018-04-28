@@ -17,11 +17,17 @@ type ResultsListener func([]Entity)
 
 // App represents the main app state
 type App struct {
+	// Callbacks provided by NewApp()
 	OnQueryChanged QueryListener
 
+	// required callbacks:
 	OnResults ResultsListener
-	OnError   func(err error)
+	Quit      func()
 
+	// optional callbacks:
+	OnError func(err error)
+
+	// internal state:
 	entities []Entity
 	loaded   bool
 }

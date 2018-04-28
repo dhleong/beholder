@@ -39,6 +39,9 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 
 	input.KeyHandler = func(ev *tcell.EventKey) *tcell.EventKey {
 		switch ev.Key() {
+		case tcell.KeyESC:
+			app.Quit()
+			return nil
 		case tcell.KeyCtrlJ:
 			choices.Scroll(-1)
 			return nil
