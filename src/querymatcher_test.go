@@ -119,6 +119,12 @@ func TestQueryMatcher(t *testing.T) {
 				greaterThan,
 				"Row your wand",
 			)
+
+			So("mcw", ShouldScore,
+				"Mass Cure Wounds",
+				greaterThan,
+				"Melf's Acid Arrow",
+			)
 		})
 	})
 

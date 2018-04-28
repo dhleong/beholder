@@ -42,9 +42,9 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 	sequences := make([]*matchedSequence, 0, 8)
 
 	longestSubsequence := 0
-	currentSequence := &matchedSequence{}
+	var currentSequence *matchedSequence
 
-	words := 1
+	words := 0
 	wordStartsMatched := 0
 	inWord := true
 
@@ -59,6 +59,9 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 		} else if !inWord {
 			inWord = true
 			enteredWord = true
+		}
+
+		if enteredWord {
 			words++
 		}
 
@@ -66,7 +69,7 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 			if currentSequence != nil {
 				currentSequence.end++
 			} else {
-				currentSequence := &matchedSequence{
+				currentSequence = &matchedSequence{
 					start:        j,
 					end:          j + 1,
 					startsOnWord: enteredWord,
