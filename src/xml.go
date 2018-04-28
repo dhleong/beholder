@@ -21,13 +21,24 @@ func (n Named) GetName() string {
 	return n.Name
 }
 
+// Textual .
+type Textual interface {
+	GetText() []string
+}
+
+// textual is a mixin for anything with a sequences of <text>
 type textual struct {
 	Text []string `xml:"text"`
 }
 
+// GetText implements the Textual interface
+func (t textual) GetText() []string {
+	return t.Text
+}
+
 // Stats is a stat block for a creature
 type Stats struct {
-	ArmorClass          string `xml:"AC"`
+	ArmorClass          string `xml:"ac"`
 	HP                  string `xml:"hp"`
 	Speed               string `xml:"speed"`
 	Str                 int    `xml:"str"`

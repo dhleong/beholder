@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+
 	app, err := beholder.NewApp()
 	if err != nil {
 		panic(err)

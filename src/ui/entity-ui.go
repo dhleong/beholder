@@ -1,10 +1,17 @@
 package ui
 
 import (
+	"strings"
+
 	"github.com/rivo/tview"
 
 	beholder "github.com/dhleong/beholder/src"
+	"github.com/dhleong/beholder/src/ui/tui"
 )
+
+var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
+	beholder.SpellEntity: tui.SpellRenderer,
+}
 
 // EntityUI .
 type EntityUI struct {
@@ -17,6 +24,7 @@ type EntityUI struct {
 func NewEntityUI() *EntityUI {
 	text := tview.NewTextView()
 	text.SetBorderPadding(1, 1, 1, 1)
+	text.SetDynamicColors(true)
 	return &EntityUI{
 		UI:   text,
 		text: text,
@@ -29,5 +37,11 @@ func (e *EntityUI) Set(entity beholder.Entity) {
 		e.text.SetText("")
 		return
 	}
-	e.text.SetText(entity.GetName())
+
+	r := entityRenderers[entity.GetKind()]
+	if r != nil {
+		e.text.SetText(strings.Trim(r.Render(entity), " \n\r"))
+	} else {
+		e.text.SetText(entity.GetName())
+	}
 }
