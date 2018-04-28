@@ -18,11 +18,19 @@ type ChoicesUI struct {
 
 // Set the choices
 func (c *ChoicesUI) Set(choices []beholder.Entity) {
+	oldSelected := c.list.GetCurrentItem()
+
 	c.list.Clear()
 	for i := 0; i < 20; i++ {
-		c.list.AddItem(&beholder.SpellEntity{fmt.Sprintf("%d", i)})
+		c.list.AddItem(&beholder.SpellEntity{Name: fmt.Sprintf("%d", i)})
 	}
-	c.list.SetCurrentItem(c.list.GetItemCount() - 1)
+
+	// persist selected position as best as possible
+	if oldSelected < c.list.GetItemCount() {
+		c.list.SetCurrentItem(oldSelected)
+	} else {
+		c.list.SetCurrentItem(c.list.GetItemCount() - 1)
+	}
 }
 
 // Scroll by the given number of items

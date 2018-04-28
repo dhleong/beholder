@@ -36,7 +36,23 @@ func (l *EntityList) GetCurrentItem() int {
 
 // SetCurrentItem sets the index of the currently selected list item.
 func (l *EntityList) SetCurrentItem(item int) {
+	if item < 0 {
+		l.currentItem = 0
+		l.offset = 0
+		return
+	} else if item >= len(l.entities) {
+		item = len(l.entities) - 1
+	}
+
 	l.currentItem = item
+
+	// scroll the view to make currentItem visible
+	_, _, _, height := l.Box.GetInnerRect()
+	if item-l.offset < 0 {
+		l.offset = item
+	} else if item-l.offset >= height {
+		l.offset = item - height + 1
+	}
 }
 
 // GetCurrentEntity returns the currently selected entity.
@@ -71,12 +87,38 @@ func (l *EntityList) Draw(screen tcell.Screen) {
 	x, y, width, height := l.GetInnerRect()
 	bottomLimit := y + height
 
-	for i := l.offset; i < height && i < len(l.entities); i++ {
+	var bgStyle tcell.Style
+	bgStyle = bgStyle.Background(Colors.SelectedBackground)
+
+	rowY := bottomLimit
+	for i := l.offset; rowY >= y && i < len(l.entities); i++ {
 		e := l.entities[i]
+
+		rowY--
+		itemX := x + 2
+		itemWidth := width - 2
+		screen.SetContent(x, rowY, ' ', nil,
+			bgStyle,
+		)
 		tview.Print(
-			screen, e.GetName(), x, bottomLimit-i, width,
+			screen, e.GetName(), itemX, rowY, itemWidth,
 			tview.AlignLeft, tcell.ColorDefault,
 		)
+
+		// "selected" background
+		if i == l.currentItem {
+			textWidth := tview.StringWidth(e.GetName())
+			textEnd := itemX + textWidth
+
+			for bx := 1; bx < textEnd && bx < width; bx++ {
+				m, c, style, _ := screen.GetContent(x+bx, rowY)
+
+				style = style.
+					Background(Colors.SelectedBackground).
+					Foreground(Colors.SelectedFg)
+				screen.SetContent(x+bx, rowY, m, c, style)
+			}
+		}
 	}
 
 }

@@ -40,10 +40,10 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 	input.KeyHandler = func(ev *tcell.EventKey) *tcell.EventKey {
 		switch ev.Key() {
 		case tcell.KeyCtrlJ:
-			choices.Scroll(1)
+			choices.Scroll(-1)
 			return nil
 		case tcell.KeyCtrlK:
-			choices.Scroll(-1)
+			choices.Scroll(1)
 			return nil
 		}
 		return ev

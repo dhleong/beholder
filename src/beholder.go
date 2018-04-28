@@ -19,7 +19,7 @@ func NewApp() *App {
 	app := &App{}
 
 	onQuery := func(query string) {
-		if len(query) > 3 {
+		if len(query) > 0 {
 			app.OnResults([]Entity{})
 		}
 	}

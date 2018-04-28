@@ -14,10 +14,6 @@ func main() {
 	tapp := tview.NewApplication().
 		SetRoot(root, true)
 
-	// app.OnResults = func(results []beholder.Entity) {
-	// 	tapp.Stop()
-	// }
-
 	if err := tapp.Run(); err != nil {
 		panic(err)
 	}
