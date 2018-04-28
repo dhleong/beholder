@@ -14,5 +14,6 @@ func NewQueryMatcher(query string) *QueryMatcher {
 
 // Matches .
 func (q *QueryMatcher) Matches(value string) bool {
+	// TODO: fuzzy matching
 	return strings.Contains(strings.ToUpper(value), q.query)
 }

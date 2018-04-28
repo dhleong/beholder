@@ -38,6 +38,11 @@ func (c *ChoicesUI) Scroll(items int) {
 	)
 }
 
+// SetChangedFunc .
+func (c *ChoicesUI) SetChangedFunc(changed func(entity beholder.Entity)) {
+	c.list.SetChangedFunc(changed)
+}
+
 // NewChoicesUI .
 func NewChoicesUI(app *beholder.App) *ChoicesUI {
 	list := tui.NewList()

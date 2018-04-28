@@ -17,6 +17,7 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 
 	input := NewInputUI(app)
 	choices := NewChoicesUI(app)
+	entity := NewEntityUI()
 
 	grid.SetRows(0, 1)
 	grid.SetColumns(-1, -4)
@@ -37,6 +38,13 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 		false,
 	)
 
+	grid.AddItem(entity.UI,
+		0, 1,
+		1, 1,
+		0, 0,
+		false,
+	)
+
 	input.KeyHandler = func(ev *tcell.EventKey) *tcell.EventKey {
 		switch ev.Key() {
 		case tcell.KeyESC:
@@ -51,6 +59,8 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 		}
 		return ev
 	}
+
+	choices.SetChangedFunc(entity.Set)
 
 	app.OnResults = func(results []beholder.Entity) {
 		choices.Set(results)

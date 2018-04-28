@@ -13,6 +13,7 @@ type EntityList struct {
 
 	entities []beholder.Entity
 
+	onChanged   func(entity beholder.Entity)
 	currentItem int
 	offset      int
 }
@@ -39,12 +40,14 @@ func (l *EntityList) SetCurrentItem(item int) {
 	if item < 0 {
 		l.currentItem = 0
 		l.offset = 0
+		l.onChanged(nil)
 		return
 	} else if item >= len(l.entities) {
 		item = len(l.entities) - 1
 	}
 
 	l.currentItem = item
+	l.onChanged(l.GetCurrentEntity())
 
 	// scroll the view to make currentItem visible
 	_, _, _, height := l.Box.GetInnerRect()
@@ -57,6 +60,10 @@ func (l *EntityList) SetCurrentItem(item int) {
 
 // GetCurrentEntity returns the currently selected entity.
 func (l *EntityList) GetCurrentEntity() beholder.Entity {
+	if len(l.entities) == 0 {
+		return nil
+	}
+
 	return l.entities[l.currentItem]
 }
 
@@ -70,6 +77,7 @@ func (l *EntityList) Clear() {
 	l.entities = nil
 	l.currentItem = 0
 	l.offset = 0
+	l.onChanged(nil)
 }
 
 // SetEntities sets the entities
@@ -78,6 +86,12 @@ func (l *EntityList) SetEntities(entities []beholder.Entity) {
 	if l.currentItem >= len(entities) {
 		l.currentItem = len(entities) - 1
 	}
+	l.onChanged(l.GetCurrentEntity())
+}
+
+// SetChangedFunc .
+func (l *EntityList) SetChangedFunc(changed func(entity beholder.Entity)) {
+	l.onChanged = changed
 }
 
 // Draw .
