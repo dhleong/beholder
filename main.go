@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	app := beholder.NewApp()
+	app, err := beholder.NewApp()
+	if err != nil {
+		panic(err)
+	}
 
 	root := ui.NewMainUI(app)
 	tapp := tview.NewApplication().

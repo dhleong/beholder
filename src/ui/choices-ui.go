@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	"github.com/rivo/tview"
 
 	beholder "github.com/dhleong/beholder/src"
@@ -21,8 +19,8 @@ func (c *ChoicesUI) Set(choices []beholder.Entity) {
 	oldSelected := c.list.GetCurrentItem()
 
 	c.list.Clear()
-	for i := 0; i < 20; i++ {
-		c.list.AddItem(&beholder.SpellEntity{Name: fmt.Sprintf("%d", i)})
+	for _, entity := range choices {
+		c.list.AddItem(entity)
 	}
 
 	// persist selected position as best as possible
