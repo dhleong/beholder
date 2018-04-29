@@ -38,21 +38,42 @@ func (t textual) GetText() []string {
 
 // Stats is a stat block for a creature
 type Stats struct {
-	ArmorClass          string `xml:"ac"`
-	HP                  string `xml:"hp"`
-	Speed               string `xml:"speed"`
-	Str                 int    `xml:"str"`
-	Dex                 int    `xml:"dex"`
-	Con                 int    `xml:"con"`
-	Int                 int    `xml:"int"`
-	Wis                 int    `xml:"wis"`
-	Cha                 int    `xml:"cha"`
-	PassivePerception   int    `xml:"passive"`
-	SavingThrows        string `xml:"saving"`
-	SkillModifiers      string `xml:"skill"`
-	Senses              string `xml:"senses"`
-	DamageImmunities    string `xml:"immune"`
-	ConditionImmunities string `xml:"conditionImmune"`
+	ArmorClass            string `xml:"ac"`
+	HP                    string `xml:"hp"`
+	Speed                 string `xml:"speed"`
+	Str                   int    `xml:"str"`
+	Dex                   int    `xml:"dex"`
+	Con                   int    `xml:"con"`
+	Int                   int    `xml:"int"`
+	Wis                   int    `xml:"wis"`
+	Cha                   int    `xml:"cha"`
+	PassivePerception     int    `xml:"passive"`
+	SavingThrows          string `xml:"saving"`
+	SkillModifiers        string `xml:"skill"`
+	Senses                string `xml:"senses"`
+	DamageImmunities      string `xml:"immune"`
+	DamageResistances     string `xml:"resist"`
+	DamageVulnerabilities string `xml:"vulnerable"`
+	ConditionImmunities   string `xml:"conditionImmune"`
+}
+
+// Trait is a simple container for a Name and Text
+type Trait struct {
+	Named
+	textual
+}
+
+// Traitor has Traits (bad pun, I know)
+type Traitor interface {
+	GetTraits() []*Trait
+}
+
+type traitor struct {
+	Traits []*Trait `xml:"trait"`
+}
+
+func (t traitor) GetTraits() []*Trait {
+	return t.Traits
 }
 
 // Item .
@@ -76,11 +97,13 @@ func (i Item) GetKind() EntityKind {
 type Monster struct {
 	Named
 	Stats
-	Size      string `xml:"size"`
-	Type      string `xml:"type"`
-	Alignment string `xml:"alignment"`
-	Challenge string `xml:"cr"`
-	Languages string `xml:"languages"`
+	traitor
+	Size      string   `xml:"size"`
+	Type      string   `xml:"type"`
+	Alignment string   `xml:"alignment"`
+	Challenge string   `xml:"cr"`
+	Languages string   `xml:"languages"`
+	Actions   []*Trait `xml:"action"`
 }
 
 // GetKind from Entity interface

@@ -11,8 +11,9 @@ import (
 )
 
 var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
-	beholder.ItemEntity:  tui.ItemRenderer,
-	beholder.SpellEntity: tui.SpellRenderer,
+	beholder.ItemEntity:    tui.ItemRenderer,
+	beholder.MonsterEntity: tui.MonsterRenderer,
+	beholder.SpellEntity:   tui.SpellRenderer,
 }
 
 // EntityUI .
@@ -28,6 +29,7 @@ func NewEntityUI() *EntityUI {
 	text := tview.NewTextView()
 	text.SetBorderPadding(2, 2, 4, 4)
 	text.SetDynamicColors(true)
+	text.SetTextColor(tcell.ColorDefault)
 
 	ui := &EntityUI{
 		UI:   text,

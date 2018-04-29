@@ -1,6 +1,7 @@
 package tui
 
 import (
+	"bytes"
 	"strings"
 
 	beholder "github.com/dhleong/beholder/src"
@@ -32,6 +33,14 @@ func (r *EntityRenderer) replacer(entity beholder.Entity) *strings.Replacer {
 			}
 		}
 	}
+
+	if t, ok := entity.(beholder.Traitor); ok {
+		traits := t.GetTraits()
+		replacements = append(replacements, "{traits}", BuildTraitsString(traits))
+	} else {
+		replacements = append(replacements, "{traits}", "")
+	}
+
 	return strings.NewReplacer(replacements...)
 }
 
@@ -43,4 +52,29 @@ func contains(haystack []string, needle string) bool {
 	}
 
 	return false
+}
+
+// BuildTraitsString .
+func BuildTraitsString(traits []*beholder.Trait) string {
+	if traits == nil {
+		return ""
+	}
+
+	var traitsBuilder bytes.Buffer
+
+	for i, trait := range traits {
+		if i > 0 {
+			traitsBuilder.WriteString("\n")
+		}
+		traitsBuilder.WriteString("[::b]")
+		traitsBuilder.WriteString(trait.Name)
+		traitsBuilder.WriteString("\n")
+		traitsBuilder.WriteString(strings.Join(trait.GetText(), "\n"))
+
+		if i < len(traits)-1 {
+			traitsBuilder.WriteString("\n")
+		}
+	}
+
+	return traitsBuilder.String()
 }
