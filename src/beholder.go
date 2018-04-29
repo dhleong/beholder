@@ -1,11 +1,7 @@
 package beholder
 
 import (
-	"bufio"
-	"os"
 	"sort"
-
-	"github.com/mitchellh/go-homedir"
 )
 
 const queryLimit int = 128
@@ -38,22 +34,21 @@ type scoredEntity struct {
 	score float32
 }
 
-// NewApp creates a new App
-func NewApp() (*App, error) {
+// NewApp creates a new App using the given DataSource
+func NewApp(dataSource DataSource) (*App, error) {
 
 	app := &App{}
 
 	// loading is pretty fast, but by loading
 	// asynchronously the app will feel even snappier
 	go func() {
-		entities, err := loadEntities()
+		entities, err := dataSource.GetEntities()
 		if err != nil && app.OnError != nil {
 			app.OnError(err)
 			return
 		} else if err != nil {
 			panic(err)
 		}
-
 		app.entities = entities
 		app.loaded = true
 	}()
@@ -110,21 +105,4 @@ func (a *App) Query(query string) []Entity {
 	}
 
 	return scored
-}
-
-func loadEntities() ([]Entity, error) {
-	// FIXME TODO: download using DataSource, don't reuse this dir, etc.
-	compendiumPath, err := homedir.Expand("~/.config/lacona-dnd/character.xml")
-	if err != nil {
-		return nil, err
-	}
-
-	f, err := os.Open(compendiumPath)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	reader := bufio.NewReader(f)
-	return ParseXML(reader)
 }

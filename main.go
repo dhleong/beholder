@@ -9,7 +9,12 @@ import (
 
 func main() {
 
-	app, err := beholder.NewApp()
+	dataSource, err := beholder.NewDataSource()
+	if err != nil {
+		panic(err)
+	}
+
+	app, err := beholder.NewApp(dataSource)
 	if err != nil {
 		panic(err)
 	}
