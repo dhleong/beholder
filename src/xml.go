@@ -3,9 +3,11 @@ package beholder
 import (
 	"encoding/xml"
 	"io"
+	"strings"
 )
 
 type compendium struct {
+	Classes  []Class   `xml:"class"`
 	Items    []Item    `xml:"item"`
 	Monsters []Monster `xml:"monster"`
 	Races    []Race    `xml:"race"`
@@ -75,6 +77,34 @@ type traitor struct {
 
 func (t traitor) GetTraits() []*Trait {
 	return t.Traits
+}
+
+// Class .
+type Class struct {
+	Named
+
+	HitDice      int    `xml:"hd"`
+	Proficiency  string `xml:"proficiency"`
+	SpellAbility string `xml:"spellAbility"`
+
+	Levels []Level `xml:"autolevel"`
+}
+
+// Level represents features, etc. granted at a given level
+type Level struct {
+	Level    int      `xml:"level,attr"`
+	Features []*Trait `xml:"feature"`
+}
+
+// ClassFeature is basically a Trait for one or more classes
+type ClassFeature struct {
+	*Trait
+	Classes []string
+}
+
+// GetKind from Entity interface
+func (t ClassFeature) GetKind() EntityKind {
+	return FeatureEntity
 }
 
 // RaceTrait is a Trait for one or more races
@@ -172,8 +202,7 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 	raceTraits := map[string]*RaceTrait{}
 	for _, race := range compendium.Races {
 		for _, trait := range race.Traits {
-			t := raceTraits[trait.Name]
-			if t == nil {
+			if t := raceTraits[trait.Name]; t == nil {
 				t = &RaceTrait{trait, []string{race.Name}}
 				raceTraits[trait.Name] = t
 			} else {
@@ -182,6 +211,24 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 		}
 	}
 	for _, entity := range raceTraits {
+		result = append(result, entity)
+	}
+
+	// yikes:
+	classFeatures := map[string]*ClassFeature{}
+	for _, class := range compendium.Classes {
+		for _, level := range class.Levels {
+			for _, feature := range level.Features {
+				if f := classFeatures[feature.Name]; f == nil {
+					f = &ClassFeature{feature, []string{class.Name}}
+					classFeatures[feature.Name] = f
+				} else if !strings.HasSuffix(class.Name, "!Base") {
+					f.Classes = append(f.Classes, class.Name)
+				}
+			}
+		}
+	}
+	for _, entity := range classFeatures {
 		result = append(result, entity)
 	}
 
