@@ -3,6 +3,7 @@ package ui
 import (
 	"strings"
 
+	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 
 	beholder "github.com/dhleong/beholder/src"
@@ -16,7 +17,8 @@ var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
 
 // EntityUI .
 type EntityUI struct {
-	UI tview.Primitive
+	UI         tview.Primitive
+	KeyHandler func(*tcell.EventKey) *tcell.EventKey
 
 	text *tview.TextView
 }
@@ -26,10 +28,17 @@ func NewEntityUI() *EntityUI {
 	text := tview.NewTextView()
 	text.SetBorderPadding(2, 2, 4, 4)
 	text.SetDynamicColors(true)
-	return &EntityUI{
+
+	ui := &EntityUI{
 		UI:   text,
 		text: text,
 	}
+
+	text.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
+		return ui.KeyHandler(ev)
+	})
+
+	return ui
 }
 
 // Set the current Entity to be displayed

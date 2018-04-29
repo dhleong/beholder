@@ -14,9 +14,9 @@ func main() {
 		panic(err)
 	}
 
-	root := ui.NewMainUI(app)
-	tapp := tview.NewApplication().
-		SetRoot(root, true)
+	tapp := tview.NewApplication()
+	root := ui.NewMainUI(app, tapp)
+	tapp.SetRoot(root, true)
 
 	app.Quit = tapp.Stop
 

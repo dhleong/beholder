@@ -38,6 +38,11 @@ func (c *ChoicesUI) Scroll(items int) {
 	)
 }
 
+// GetSelectedEntity .
+func (c *ChoicesUI) GetSelectedEntity() beholder.Entity {
+	return c.list.GetCurrentEntity()
+}
+
 // SetChangedFunc .
 func (c *ChoicesUI) SetChangedFunc(changed func(entity beholder.Entity)) {
 	c.list.SetChangedFunc(changed)

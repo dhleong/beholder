@@ -8,7 +8,7 @@ import (
 )
 
 // NewMainUI .
-func NewMainUI(app *beholder.App) tview.Primitive {
+func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 	// app := beholder.NewApp()
 
 	tview.Styles.PrimitiveBackgroundColor = tcell.ColorDefault
@@ -50,11 +50,29 @@ func NewMainUI(app *beholder.App) tview.Primitive {
 		case tcell.KeyESC:
 			app.Quit()
 			return nil
+		case tcell.KeyEnter:
+			if choices.GetSelectedEntity() != nil {
+				tapp.SetFocus(entity.UI)
+			}
+			return nil
 		case tcell.KeyCtrlJ:
 			choices.Scroll(-1)
 			return nil
 		case tcell.KeyCtrlK:
 			choices.Scroll(1)
+			return nil
+		}
+		return ev
+	}
+
+	entity.KeyHandler = func(ev *tcell.EventKey) *tcell.EventKey {
+		switch ev.Key() {
+		case tcell.KeyBackspace:
+			fallthrough
+		case tcell.KeyBackspace2:
+			fallthrough
+		case tcell.KeyESC:
+			tapp.SetFocus(input.UI)
 			return nil
 		}
 		return ev
