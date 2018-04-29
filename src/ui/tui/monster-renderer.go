@@ -53,6 +53,7 @@ var MonsterRenderer = &EntityRenderer{
 		return []string{
 			"{size}", sizes[m.Size],
 			"{type}", m.Type,
+			"{cr}", m.Challenge,
 			"{immunities}", immunities.String(),
 			"{actions}", BuildTraitsString(m.Actions),
 
