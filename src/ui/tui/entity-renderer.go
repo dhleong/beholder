@@ -20,15 +20,27 @@ func (r *EntityRenderer) Render(entity beholder.Entity) string {
 
 func (r *EntityRenderer) replacer(entity beholder.Entity) *strings.Replacer {
 	replacements := []string{"{name}", entity.GetName()}
+	replacements = append(replacements, r.replacements(entity)...)
+
 	if t, ok := entity.(beholder.Textual); ok {
-		text := t.GetText()
-		if text == nil {
-			replacements = append(replacements, "{text}", "")
-		} else {
-			replacements = append(replacements, "{text}", strings.Join(t.GetText(), "\n"))
+		if !contains(replacements, "{text}") {
+			text := t.GetText()
+			if text == nil {
+				replacements = append(replacements, "{text}", "")
+			} else {
+				replacements = append(replacements, "{text}", strings.Join(t.GetText(), "\n"))
+			}
+		}
+	}
+	return strings.NewReplacer(replacements...)
+}
+
+func contains(haystack []string, needle string) bool {
+	for _, straw := range haystack {
+		if straw == needle {
+			return true
 		}
 	}
 
-	replacements = append(replacements, r.replacements(entity)...)
-	return strings.NewReplacer(replacements...)
+	return false
 }

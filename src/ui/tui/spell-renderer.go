@@ -32,13 +32,24 @@ var SpellRenderer = &EntityRenderer{
 		return []string{
 			"{level}", level,
 			"{school}", schools[s.School],
+			"{cast-time}", s.Time,
+			"{range}", s.Range,
+			"{components}", s.Components,
+			"{duration}", s.Duration,
+			"{classes}", s.Classes,
 		}
 	},
 
 	template: `
-	[::bu]{name}[-:-:-]
-	[::d]{level} {school}[-:-:-]
+[::bu]{name}[-:-:-]
+[::d]{level} {school}[-:-:-]
 
-	{text}
+[::b]Casting Time[::-]: {cast-time}
+[::b]Range[::-]: {range}
+[::b]Components[::-]: {components}
+[::b]Duration[::-]: {duration}
+[::b]Classes[::-]: {classes}
+
+{text}
 `,
 }

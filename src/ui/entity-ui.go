@@ -10,6 +10,7 @@ import (
 )
 
 var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
+	beholder.ItemEntity:  tui.ItemRenderer,
 	beholder.SpellEntity: tui.SpellRenderer,
 }
 
@@ -23,7 +24,7 @@ type EntityUI struct {
 // NewEntityUI .
 func NewEntityUI() *EntityUI {
 	text := tview.NewTextView()
-	text.SetBorderPadding(1, 1, 1, 1)
+	text.SetBorderPadding(2, 2, 4, 4)
 	text.SetDynamicColors(true)
 	return &EntityUI{
 		UI:   text,
@@ -44,4 +45,5 @@ func (e *EntityUI) Set(entity beholder.Entity) {
 	} else {
 		e.text.SetText(entity.GetName())
 	}
+	e.text.ScrollToBeginning()
 }
