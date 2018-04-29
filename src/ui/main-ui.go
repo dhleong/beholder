@@ -20,28 +20,41 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 	entity := NewEntityUI()
 
 	grid.SetRows(0, 1)
-	grid.SetColumns(-1, -4)
+	grid.SetColumns(15, -1, -4) // the first column is the min width for `choices`
 
 	// input spans the bottom row
 	grid.AddItem(input.UI,
 		1, 0,
-		1, 2,
+		1, 3,
 		0, 0,
 		true,
 	)
 
-	// choices are above input
+	// choices are above input; they have an exact width so as not to be too small
+	// UNLESS the window is wide enough to allow for something more precise
 	grid.AddItem(choices.UI,
 		0, 0,
 		1, 1,
 		0, 0,
 		false,
 	)
+	grid.AddItem(choices.UI,
+		0, 0,
+		1, 2, // if there's enough room for it to grow, do so
+		0, 60,
+		false,
+	)
 
 	grid.AddItem(entity.UI,
 		0, 1,
-		1, 1,
+		1, 2,
 		0, 0,
+		false,
+	)
+	grid.AddItem(entity.UI,
+		0, 2, // when there's enough room for `choices` to grow, this doesn't need to use its column
+		1, 1,
+		0, 60,
 		false,
 	)
 
