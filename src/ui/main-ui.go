@@ -69,12 +69,25 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 				entity.SetFocused(true)
 			}
 			return nil
+
+		case tcell.KeyDown:
+			fallthrough
 		case tcell.KeyCtrlJ:
 			choices.Scroll(-1)
 			return nil
+
+		case tcell.KeyUp:
+			fallthrough
 		case tcell.KeyCtrlK:
 			choices.Scroll(1)
 			return nil
+
+			// forward page up/down events to the entity view
+		case tcell.KeyPgUp:
+			fallthrough
+		case tcell.KeyPgDn:
+			handler := entity.text.InputHandler()
+			handler(ev, nil)
 		}
 		return ev
 	}
