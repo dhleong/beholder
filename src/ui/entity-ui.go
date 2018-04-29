@@ -14,6 +14,7 @@ var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
 	beholder.ItemEntity:    tui.ItemRenderer,
 	beholder.MonsterEntity: tui.MonsterRenderer,
 	beholder.SpellEntity:   tui.SpellRenderer,
+	beholder.TraitEntity:   tui.TraitRenderer,
 }
 
 // EntityUI .

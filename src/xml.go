@@ -8,6 +8,7 @@ import (
 type compendium struct {
 	Items    []Item    `xml:"item"`
 	Monsters []Monster `xml:"monster"`
+	Races    []Race    `xml:"race"`
 	Spells   []Spell   `xml:"spell"`
 }
 
@@ -76,6 +77,17 @@ func (t traitor) GetTraits() []*Trait {
 	return t.Traits
 }
 
+// RaceTrait is a Trait for one or more races
+type RaceTrait struct {
+	*Trait
+	Races []string
+}
+
+// GetKind from Entity interface
+func (t RaceTrait) GetKind() EntityKind {
+	return TraitEntity
+}
+
 // Item .
 type Item struct {
 	Named
@@ -109,6 +121,12 @@ type Monster struct {
 // GetKind from Entity interface
 func (m Monster) GetKind() EntityKind {
 	return MonsterEntity
+}
+
+// Race .
+type Race struct {
+	Named
+	traitor
 }
 
 // Spell .
@@ -148,6 +166,22 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 		result = append(result, entity)
 	}
 	for _, entity := range compendium.Monsters {
+		result = append(result, entity)
+	}
+
+	raceTraits := map[string]*RaceTrait{}
+	for _, race := range compendium.Races {
+		for _, trait := range race.Traits {
+			t := raceTraits[trait.Name]
+			if t == nil {
+				t = &RaceTrait{trait, []string{race.Name}}
+				raceTraits[trait.Name] = t
+			} else {
+				t.Races = append(t.Races, race.Name)
+			}
+		}
+	}
+	for _, entity := range raceTraits {
 		result = append(result, entity)
 	}
 

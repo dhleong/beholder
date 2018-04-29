@@ -8,6 +8,7 @@ const (
 	ItemEntity EntityKind = iota + 1
 	MonsterEntity
 	SpellEntity
+	TraitEntity
 )
 
 // Entity is some renderable datum
