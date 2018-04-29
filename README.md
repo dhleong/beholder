@@ -29,3 +29,4 @@ On macOS you can install it via [homebrew][4]:
 [1]: https://www.youtube.com/watch?v=byva0hOj8CU
 [2]: https://github.com/dhleong/beholder/releases/latest
 [3]: https://golang.org/
+[4]: https://brew.sh/
