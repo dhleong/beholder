@@ -3,6 +3,8 @@
 # Release script for beholder
 #
 
+import hashlib
+import urllib
 from collections import OrderedDict
 
 try:
@@ -21,6 +23,15 @@ except ImportError:
 
 notes = File(".last-release-notes")
 latestTag = git.Tag.latest()
+
+def sha256(fileUrl, blockSize=65536):
+    # based on: https://gist.github.com/rji/b38c7238128edf53a181
+    hasher = hashlib.sha256()
+    shafp = urllib.urlopen(fileUrl)
+    for block in iter(lambda: shafp.read(blockSize), b''):
+        hasher.update(block)
+    shafp.close()
+    return hasher.hexdigest()
 
 def formatIssue(issue):
     return "- {title} (#{number})\n".format(
@@ -152,6 +163,28 @@ verify(gitRelease).create(body=releaseNotes)
 for f in compiled:
     print "Uploading", f
     verify(gitRelease).uploadFile(f, 'application/octet-stream')
+
+#
+# Update homebrew repo
+#
+
+print "Updating homebrew..."
+
+tarUrl = 'https://github.com/dhleong/beholder/archive/%s.tar.gz' % version
+tarSha = sha256(tarUrl)
+
+homebrewConfig = github.Config("dhleong/homebrew-judo")
+formulaFile = github.RepoFile("/Formula/judo.rb", config=homebrewConfig)
+oldContents = formulaFile.read()
+
+newContents = oldContents
+newContents = re.sub('url "[^"]+"', 'url "%s"' % tarUrl, newContents)
+newContents = re.sub('sha256 "[^"]+"', 'sha256 "%s"' % tarSha, newContents)
+
+print "     url <-", tarUrl
+print "  sha256 <-", tarSha
+commit = 'Update for v%s' % version
+verify(formulaFile).write(newContents, commitMessage=commit)
 
 #
 # Success! Now, just cleanup and we're done!
