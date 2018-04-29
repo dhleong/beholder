@@ -5,7 +5,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 
 	homedir "github.com/mitchellh/go-homedir"
 )
@@ -52,7 +52,7 @@ func (d *networkDataSource) GetEntities() ([]Entity, error) {
 		}
 
 		// yes, let's fetch
-		dir := path.Dir(d.localPath)
+		dir := filepath.Dir(d.localPath)
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return nil, err
 		}
