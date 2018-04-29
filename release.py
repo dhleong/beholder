@@ -173,8 +173,8 @@ print "Updating homebrew..."
 tarUrl = 'https://github.com/dhleong/beholder/archive/%s.tar.gz' % version
 tarSha = sha256(tarUrl)
 
-homebrewConfig = github.Config("dhleong/homebrew-judo")
-formulaFile = github.RepoFile("/Formula/judo.rb", config=homebrewConfig)
+homebrewConfig = github.Config("dhleong/homebrew-beholder")
+formulaFile = github.RepoFile("/Formula/beholder.rb", config=homebrewConfig)
 oldContents = formulaFile.read()
 
 newContents = oldContents
