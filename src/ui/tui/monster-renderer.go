@@ -40,6 +40,16 @@ var MonsterRenderer = &EntityRenderer{
 			immunities.WriteString(m.ConditionImmunities)
 		}
 
+		var savesRow = ""
+		if m.SavingThrows != "" {
+			savesRow = fmt.Sprintf("\n[::b]Saves[::-]: %s", m.SavingThrows)
+		}
+
+		var skillsRow = ""
+		if m.SkillModifiers != "" {
+			skillsRow = fmt.Sprintf("\n[::b]Skills[::-]: %s", m.SkillModifiers)
+		}
+
 		return []string{
 			"{size}", sizes[m.Size],
 			"{type}", m.Type,
@@ -57,8 +67,8 @@ var MonsterRenderer = &EntityRenderer{
 			"{wis}", fmt.Sprintf("%3d", m.Wis),
 			"{cha}", fmt.Sprintf("%3d", m.Cha),
 			"{passive}", strconv.Itoa(m.PassivePerception),
-			"{saves}", m.SavingThrows,
-			"{skills}", m.SkillModifiers,
+			"{saves-row}", savesRow,
+			"{skills-row}", skillsRow,
 			"{senses}", m.Senses,
 		}
 	},
@@ -74,10 +84,8 @@ var MonsterRenderer = &EntityRenderer{
 
 [::b]STR DEX CON INT WIS CHA[::-]
 [::b]{str} {dex} {con} {int} {wis} {cha}[::-]
-{immunities}
-[::b]Saves[::-]: {saves}
-[::b]Senses[::-]: {senses}
-[::b]Skills[::-]: {skill}
+{immunities}{saves-row}
+[::b]Senses[::-]: {senses}{skills-row}
 
 {traits}
 
