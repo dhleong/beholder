@@ -51,6 +51,7 @@ func (c *ChoicesUI) SetChangedFunc(changed func(entity beholder.Entity)) {
 // NewChoicesUI .
 func NewChoicesUI(app *beholder.App) *ChoicesUI {
 	list := tui.NewList()
+	list.SetBorderPadding(0, 0, 0, 1)
 
 	return &ChoicesUI{
 		UI:   list,

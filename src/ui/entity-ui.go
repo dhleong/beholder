@@ -29,14 +29,16 @@ type EntityUI struct {
 // NewEntityUI .
 func NewEntityUI() *EntityUI {
 	text := tview.NewTextView()
-	text.SetBorderPadding(2, 2, 4, 4)
 	text.SetDynamicColors(true)
 	text.SetTextColor(tcell.ColorDefault)
+	text.SetBorderColor(tui.Colors.Border)
 
 	ui := &EntityUI{
 		UI:   text,
 		text: text,
 	}
+
+	ui.SetFocused(false)
 
 	text.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
 		return ui.KeyHandler(ev)
@@ -59,4 +61,15 @@ func (e *EntityUI) Set(entity beholder.Entity) {
 		e.text.SetText(entity.GetName())
 	}
 	e.text.ScrollToBeginning()
+}
+
+// SetFocused .
+func (e *EntityUI) SetFocused(isFocused bool) {
+	if isFocused {
+		e.text.SetBorderPadding(1, 1, 3, 3)
+	} else {
+		e.text.SetBorderPadding(2, 2, 4, 4)
+	}
+
+	e.text.SetBorder(isFocused)
 }

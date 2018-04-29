@@ -66,6 +66,7 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 		case tcell.KeyEnter:
 			if choices.GetSelectedEntity() != nil {
 				tapp.SetFocus(entity.UI)
+				entity.SetFocused(true)
 			}
 			return nil
 		case tcell.KeyCtrlJ:
@@ -86,6 +87,7 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 			fallthrough
 		case tcell.KeyESC:
 			tapp.SetFocus(input.UI)
+			entity.SetFocused(false)
 			return nil
 		}
 		return ev
