@@ -11,7 +11,7 @@ import (
 	"github.com/dhleong/beholder/src/ui"
 )
 
-const beholderVersion = "0.1.0"
+const beholderVersion = "0.2.0"
 
 type options struct {
 	// right now we only have the --version and --help options
