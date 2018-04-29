@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/docopt/docopt-go"
+  packages = ["."]
+  revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
+
+[[projects]]
+  branch = "master"
   name = "github.com/gdamore/encoding"
   packages = ["."]
   revision = "b23993cbb6353f0e6aa98d0ee318a34728f628b9"
@@ -87,6 +93,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "75b9a913a79e111790a1fee5c5e832036fed28838ada3cbe10b465b6ecc9d286"
+  inputs-digest = "aaa1102c8f836df46ab2f9078362c02e67879e7596862b10ed38c7b2a9880269"
   solver-name = "gps-cdcl"
   solver-version = 1
