@@ -32,6 +32,7 @@ func NewEntityUI() *EntityUI {
 	text.SetDynamicColors(true)
 	text.SetTextColor(tcell.ColorDefault)
 	text.SetBorderColor(tui.Colors.Border)
+	text.SetWordWrap(true)
 
 	ui := &EntityUI{
 		UI:   text,
