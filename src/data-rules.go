@@ -5,11 +5,12 @@ import "fmt"
 type ruleEntity struct {
 	Named
 	textual
+	kind EntityKind
 }
 
 // GetKind from Entity interface
 func (r ruleEntity) GetKind() EntityKind {
-	return RuleEntity
+	return r.kind
 }
 
 // ruleParts is a recursive structure representing a Rule and
@@ -34,10 +35,19 @@ var section = rule
 // Generate entities given ruleParts, returning the first
 // ruleEntity and a slice of *all* entities generated (*including*
 // the first one)
-func generateEntities(part ruleParts) (ruleEntity, []Entity) {
+func generateEntities(kind EntityKind, part ruleParts, isTop bool) (ruleEntity, []Entity) {
+	// NOTE: the top-level entity is always a RuleEntity
+	var actualKind EntityKind
+	if isTop {
+		actualKind = RuleEntity
+	} else {
+		actualKind = kind
+	}
+
 	text := make([]string, 0, len(part.parts))
 	parent := &ruleEntity{
 		Named: Named{part.name},
+		kind:  actualKind,
 	}
 	generated := []Entity{parent}
 
@@ -49,7 +59,7 @@ func generateEntities(part ruleParts) (ruleEntity, []Entity) {
 		case ruleParts:
 			// NOTE: if we wanted to get fancy, we could replace all the
 			// headers fromt he child entity with, eg: h2 -> h3
-			childEntity, newDescendants := generateEntities(v)
+			childEntity, newDescendants := generateEntities(kind, v, false)
 			generated = append(generated, newDescendants...)
 
 			text = append(text,
@@ -68,11 +78,14 @@ func generateEntities(part ruleParts) (ruleEntity, []Entity) {
 	return *parent, generated
 }
 
-func rulesDataSource(rules ...ruleParts) DataSource {
+// rulesDataSource generates a DataSource containing a bunch of parts.
+// The top-level Entity will always be RuleEntity, but any child entities
+// will use the provided `kind`
+func rulesDataSource(kind EntityKind, rules ...ruleParts) DataSource {
 	entities := make([]Entity, 0, len(rules))
 
 	for _, part := range rules {
-		_, generated := generateEntities(part)
+		_, generated := generateEntities(kind, part, true)
 		entities = append(entities, generated...)
 	}
 
@@ -80,7 +93,8 @@ func rulesDataSource(rules ...ruleParts) DataSource {
 }
 
 // RuleDataSource .
-var RuleDataSource = rulesDataSource(
+var RuleDataSource = rulesDataSource(RuleEntity,
+
 	rule("Death, Dying, Dropping to 0 Hitpoints",
 		"When you drop to 0 hit points, you either die outright or fall unconscious, as explained in the following sections.",
 

@@ -40,6 +40,7 @@ func TestGenerateEntities(t *testing.T) {
 	Convey("generateEntities", t, func() {
 
 		topRule, entities := generateEntities(
+			RuleEntity,
 			rule("Rule",
 				"Rule introduction",
 				section("Sub-section",
@@ -49,6 +50,7 @@ func TestGenerateEntities(t *testing.T) {
 					"More subsection text",
 				),
 			),
+			true,
 		)
 
 		Convey("should merge sections and create headers", func() {
