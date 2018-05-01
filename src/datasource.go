@@ -24,15 +24,17 @@ func NewDataSource() (DataSource, error) {
 		return nil, err
 	}
 
-	ds := &networkDataSource{
-		compendiumURL: compendiumURL,
-		localPath:     localPath,
-		delegate: &diskDataSource{
-			localPath: localPath,
+	return MergeDataSources(
+		&networkDataSource{
+			compendiumURL: compendiumURL,
+			localPath:     localPath,
+			delegate: &diskDataSource{
+				localPath: localPath,
+			},
 		},
-	}
 
-	return ds, nil
+		ConditionsDataSource,
+	), nil
 }
 
 type staticDataSource struct {
@@ -106,4 +108,31 @@ func (d *diskDataSource) GetEntities() ([]Entity, error) {
 	defer f.Close()
 
 	return ParseXML(bufio.NewReader(f))
+}
+
+type mergeDataSource struct {
+	sources []DataSource
+}
+
+func (d *mergeDataSource) GetEntities() ([]Entity, error) {
+	all := make([]Entity, 0, 0)
+
+	for _, s := range d.sources {
+		result, err := s.GetEntities()
+		if err != nil {
+			return nil, err
+		}
+
+		all = append(all, result...)
+	}
+
+	return all, nil
+}
+
+// MergeDataSources creates a DataSource that combines the
+// results of all the provided DataSource instances
+func MergeDataSources(sources ...DataSource) DataSource {
+	return &mergeDataSource{
+		sources: sources,
+	}
 }
