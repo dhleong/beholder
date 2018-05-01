@@ -8,6 +8,7 @@ import (
 
 type compendium struct {
 	Classes  []Class   `xml:"class"`
+	Feats    []Feat    `xml:"feat"`
 	Items    []Item    `xml:"item"`
 	Monsters []Monster `xml:"monster"`
 	Races    []Race    `xml:"race"`
@@ -118,6 +119,17 @@ func (t RaceTrait) GetKind() EntityKind {
 	return TraitEntity
 }
 
+// Feat .
+type Feat struct {
+	Named
+	textual
+}
+
+// GetKind from Entity interface
+func (t Feat) GetKind() EntityKind {
+	return FeatEntity
+}
+
 // Item .
 type Item struct {
 	Named
@@ -197,6 +209,9 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 		result = append(result, entity)
 	}
 	for _, entity := range compendium.Monsters {
+		result = append(result, entity)
+	}
+	for _, entity := range compendium.Feats {
 		result = append(result, entity)
 	}
 
