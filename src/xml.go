@@ -163,13 +163,14 @@ type Race struct {
 type Spell struct {
 	Named
 	textual
-	Level      int    `xml:"level"`
-	School     string `xml:"school"`
-	Time       string `xml:"time"`
-	Range      string `xml:"range"`
-	Components string `xml:"components"`
-	Duration   string `xml:"duration"`
-	Classes    string `xml:"classes"`
+	Level      int     `xml:"level"`
+	School     string  `xml:"school"`
+	Time       string  `xml:"time"`
+	Range      string  `xml:"range"`
+	Ritual     *string `xml:"ritual"`
+	Components string  `xml:"components"`
+	Duration   string  `xml:"duration"`
+	Classes    string  `xml:"classes"`
 }
 
 // GetKind from Entity interface

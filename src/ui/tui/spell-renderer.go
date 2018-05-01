@@ -29,11 +29,17 @@ var SpellRenderer = &EntityRenderer{
 			level = "Cantrip"
 		}
 
+		ritualTag := ""
+		if s.Ritual != nil {
+			ritualTag = " (Ritual)"
+		}
+
 		return []string{
 			"{level}", level,
 			"{school}", schools[s.School],
 			"{cast-time}", s.Time,
 			"{range}", s.Range,
+			"{ritual?}", ritualTag,
 			"{components}", s.Components,
 			"{duration}", s.Duration,
 			"{classes}", s.Classes,
@@ -42,7 +48,7 @@ var SpellRenderer = &EntityRenderer{
 
 	template: `
 [::bu]{name}[-:-:-]
-[::d]{level} {school}[-:-:-]
+[::d]{level} {school}{ritual?}[-:-:-]
 
 [::b]Casting Time[::-]: {cast-time}
 [::b]Range[::-]: {range}
