@@ -5,10 +5,11 @@ type EntityKind int
 
 // EntityKinds
 const (
-	ItemEntity EntityKind = iota + 1
+	ActionEntity EntityKind = iota + 1
 	ConditionEntity
 	FeatEntity
 	FeatureEntity
+	ItemEntity
 	MonsterEntity
 	RuleEntity
 	SpellEntity

@@ -11,10 +11,11 @@ import (
 )
 
 var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
-	beholder.ItemEntity:      tui.ItemRenderer,
+	beholder.ActionEntity:    tui.NewSimpleRenderer(" Action"),
 	beholder.ConditionEntity: tui.NewSimpleRenderer(" Condition"),
 	beholder.FeatEntity:      tui.NewSimpleRenderer(" Feat"),
 	beholder.FeatureEntity:   tui.FeatureRenderer,
+	beholder.ItemEntity:      tui.ItemRenderer,
 	beholder.MonsterEntity:   tui.MonsterRenderer,
 	beholder.RuleEntity:      tui.NewSimpleRenderer(" Rule"),
 	beholder.SpellEntity:     tui.SpellRenderer,

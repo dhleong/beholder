@@ -33,6 +33,7 @@ func NewDataSource() (DataSource, error) {
 			},
 		},
 
+		ActionsDataSource,
 		ConditionsDataSource,
 		RuleDataSource,
 	), nil
