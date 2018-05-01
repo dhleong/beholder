@@ -102,8 +102,8 @@ def buildDefaultNotes(_):
 verify(Grep("stopship", inDir="src").foundAny(silent=False)) \
     .then(echoAndDie("I don't think so"))
 
-version = verify(File("main.go")
-                 .filtersTo(RegexFilter('const beholderVersion = "(.*)"'))
+version = verify(File("src/beholder.go")
+                 .filtersTo(RegexFilter('const Version = "(.*)"'))
                 ).valueElse(echoAndDie("No version!?"))
 versionTag = git.Tag(version)
 
