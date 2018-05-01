@@ -4,6 +4,9 @@ import (
 	"sort"
 )
 
+// Version is the current version of the app
+const Version = "0.2.0"
+
 const queryLimit int = 128
 
 // QueryListener .
@@ -18,8 +21,9 @@ type App struct {
 	OnQueryChanged QueryListener
 
 	// required callbacks:
-	OnResults ResultsListener
-	Quit      func()
+	OnUpdateAvailable func(newVersion string)
+	OnResults         ResultsListener
+	Quit              func()
 
 	// optional callbacks:
 	OnError func(err error)
@@ -53,6 +57,13 @@ func NewApp(dataSource DataSource) (*App, error) {
 		app.loaded = true
 	}()
 
+	go func() {
+		if newVersion := CheckForUpdates(); newVersion != "" {
+			// new version!
+			app.OnUpdateAvailable(newVersion)
+		}
+	}()
+
 	onQuery := func(query string) {
 		if !app.loaded {
 			// Could we defer until loaded?
@@ -73,9 +84,8 @@ func NewApp(dataSource DataSource) (*App, error) {
 
 // NewAppWithEntities is a Factory that's convenient for testing
 func NewAppWithEntities(entities []Entity) *App {
-	return &App{
-		entities: entities,
-	}
+	app, _ := NewApp(NewStaticDataSource(entities))
+	return app
 }
 
 // Query attempts to find Entities that match the query

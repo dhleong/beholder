@@ -59,6 +59,12 @@
   revision = "f855bee0205c35e6a055b86cc341effea0f446ce"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/skratchdot/open-golang"
+  packages = ["open"]
+  revision = "75fb7ed4208cf72d323d7d02fd1a5964a7a9073c"
+
+[[projects]]
   name = "github.com/smartystreets/assertions"
   packages = [
     ".",
@@ -93,6 +99,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "aaa1102c8f836df46ab2f9078362c02e67879e7596862b10ed38c7b2a9880269"
+  inputs-digest = "e86cfbd8bd7619e639bbd112ee8a22327598700ce7c081b435dba2f62f5e1904"
   solver-name = "gps-cdcl"
   solver-version = 1

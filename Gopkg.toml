@@ -48,3 +48,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/docopt/docopt-go"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/skratchdot/open-golang"

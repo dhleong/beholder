@@ -77,7 +77,6 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 
 	input.KeyHandler = func(ev *tcell.EventKey) *tcell.EventKey {
 		switch ev.Key() {
-
 		case tcell.KeyF1:
 			fallthrough
 		case tcell.KeyRune:
@@ -85,6 +84,10 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 				showHelp(HelpPageHome)
 				return nil
 			}
+
+		case tcell.KeyF5:
+			beholder.LaunchUpdateDownload()
+			return nil
 
 		case tcell.KeyESC:
 			app.Quit()
@@ -184,6 +187,14 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 		}
 
 		choices.Set(results)
+	}
+
+	app.OnUpdateAvailable = func(newVersion string) {
+		topPane.AddAndSwitchToPage("update",
+			NewUpdateUI(newVersion).UI,
+			true,
+		)
+		tapp.Draw()
 	}
 
 	return pages

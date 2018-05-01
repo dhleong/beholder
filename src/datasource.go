@@ -35,6 +35,19 @@ func NewDataSource() (DataSource, error) {
 	return ds, nil
 }
 
+type staticDataSource struct {
+	entities []Entity
+}
+
+func (d *staticDataSource) GetEntities() ([]Entity, error) {
+	return d.entities, nil
+}
+
+// NewStaticDataSource .
+func NewStaticDataSource(entities []Entity) DataSource {
+	return &staticDataSource{entities}
+}
+
 type networkDataSource struct {
 	compendiumURL string
 	localPath     string

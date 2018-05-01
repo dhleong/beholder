@@ -11,8 +11,6 @@ import (
 	"github.com/dhleong/beholder/src/ui"
 )
 
-const beholderVersion = "0.2.0"
-
 type options struct {
 	// right now we only have the --version and --help options
 }
@@ -37,7 +35,7 @@ Options:
 	args, _ := docopt.ParseArgs(
 		usage,
 		os.Args[1:],
-		fmt.Sprintf("beholder version %s", beholderVersion),
+		fmt.Sprintf("beholder version %s", beholder.Version),
 	)
 
 	opts := &options{}
