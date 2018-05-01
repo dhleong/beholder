@@ -40,7 +40,7 @@ var ConditionsDataSource = NewStaticDataSource([]Entity{
 		textual: textual{[]string{
 			"Some special abilities and environmental hazards, such as starvation and the long-term effects of freezing or scorching temperatures, can lead to a special condition called exhaustion. Exhaustion is measured in six levels. An effect can give a creature one or more levels of exhaustion, as specified in the effect's description.",
 			"",
-			"[::b]Level  Effect[::-]",
+			"<h2>Level  Effect</h2>",
 			"  1    Disadvantage on ability checks",
 			"  2    Speed halved",
 			"  3    Disadvantage on attack rolls and saving throws",
@@ -68,7 +68,7 @@ var ConditionsDataSource = NewStaticDataSource([]Entity{
 		textual: textual{[]string{
 			"• A grappled creature's speed becomes 0, and it can't benefit from any bonus to its speed.",
 			"• The condition ends if the grappler is incapacitated (see the condition).",
-			"• The condition also ends if an effect removes the grappled creature from the reach of the grappler or grappling effect, such as when a creature is hurled away by the [::b]thunder wave[::-] spell.",
+			"• The condition also ends if an effect removes the grappled creature from the reach of the grappler or grappling effect, such as when a creature is hurled away by the <b>thunder wave</b> spell.",
 		}},
 	},
 

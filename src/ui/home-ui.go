@@ -21,9 +21,9 @@ func NewHomeUI() *HomeUI {
 		SetText(strings.Trim(`
 Welcome to Beholder!
 
-Just start typing to search for
-an item, monster, spell, or
-class or race feature.
+Just start typing to search for an item,
+monster, spell, feat, rule, condition,
+or class or race feature.
 
 Press F1 or ? for detailed help anywhere.
 `, " \n"))

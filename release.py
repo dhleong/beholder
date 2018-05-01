@@ -114,7 +114,8 @@ verify(versionTag.exists())\
 # Make sure all the tests pass
 #
 
-verify(Execute("go test github.com/dhleong/beholder/src")).succeeds(silent=False).orElse(die())
+# this syntax recursively checks all subpackages for tests
+verify(Execute("go test ./... -v")).succeeds(silent=False).orElse(die())
 
 #
 # Build the release notes

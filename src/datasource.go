@@ -34,6 +34,7 @@ func NewDataSource() (DataSource, error) {
 		},
 
 		ConditionsDataSource,
+		RuleDataSource,
 	), nil
 }
 

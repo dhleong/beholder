@@ -10,6 +10,7 @@ const (
 	FeatEntity
 	FeatureEntity
 	MonsterEntity
+	RuleEntity
 	SpellEntity
 	TraitEntity
 )

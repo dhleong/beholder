@@ -29,7 +29,8 @@ func (r *EntityRenderer) replacer(entity beholder.Entity) *strings.Replacer {
 			if text == nil {
 				replacements = append(replacements, "{text}", "")
 			} else {
-				replacements = append(replacements, "{text}", strings.Join(t.GetText(), "\n"))
+				formatted := formatText(t.GetText())
+				replacements = append(replacements, "{text}", formatted)
 			}
 		}
 	}
@@ -52,6 +53,18 @@ func contains(haystack []string, needle string) bool {
 	}
 
 	return false
+}
+
+func formatText(text []string) string {
+	// doesn't allow for nesting, but that's okay for now
+	return strings.NewReplacer(
+		"<h1>", "[::b]",
+		"</h1>", "[::-]",
+		"<h2>", "[::b]",
+		"</h2>", "[::-]",
+		"<b>", "[::b]",
+		"</b>", "[::-]",
+	).Replace(strings.Join(text, "\n"))
 }
 
 // BuildTraitsString .

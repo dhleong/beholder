@@ -16,6 +16,7 @@ var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
 	beholder.FeatEntity:      tui.NewSimpleRenderer(" Feat"),
 	beholder.FeatureEntity:   tui.FeatureRenderer,
 	beholder.MonsterEntity:   tui.MonsterRenderer,
+	beholder.RuleEntity:      tui.NewSimpleRenderer(" Rule"),
 	beholder.SpellEntity:     tui.SpellRenderer,
 	beholder.TraitEntity:     tui.TraitRenderer,
 }
