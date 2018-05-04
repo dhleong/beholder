@@ -45,9 +45,19 @@ var MonsterRenderer = &EntityRenderer{
 			savesRow = fmt.Sprintf("\n[::b]Saves[::-]: %s", m.SavingThrows)
 		}
 
+		var sensesRow = ""
+		if m.Senses != "" {
+			sensesRow = fmt.Sprintf("\n[::b]Senses[::-]: %s", m.Senses)
+		}
+
 		var skillsRow = ""
 		if m.SkillModifiers != "" {
 			skillsRow = fmt.Sprintf("\n[::b]Skills[::-]: %s", m.SkillModifiers)
+		}
+
+		var languagesRow = ""
+		if m.Languages != "" {
+			languagesRow = fmt.Sprintf("\n[::b]Languages[::-]: %s", m.Languages)
 		}
 
 		return []string{
@@ -70,7 +80,8 @@ var MonsterRenderer = &EntityRenderer{
 			"{passive}", strconv.Itoa(m.PassivePerception),
 			"{saves-row}", savesRow,
 			"{skills-row}", skillsRow,
-			"{senses}", m.Senses,
+			"{languages-row}", languagesRow,
+			"{senses-row}", sensesRow,
 		}
 	},
 
@@ -85,8 +96,7 @@ var MonsterRenderer = &EntityRenderer{
 
 [::b]STR DEX CON INT WIS CHA[::-]
 [::b]{str} {dex} {con} {int} {wis} {cha}[::-]
-{immunities}{saves-row}
-[::b]Senses[::-]: {senses}{skills-row}
+{immunities}{saves-row}{senses-row}{skills-row}{languages-row}
 
 {traits}
 
