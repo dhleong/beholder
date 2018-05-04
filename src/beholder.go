@@ -7,7 +7,7 @@ import (
 // Version is the current version of the app
 const Version = "1.1.0"
 
-const queryLimit int = 128
+const queryLimit int = 1024
 
 // QueryListener .
 type QueryListener func(query string)
