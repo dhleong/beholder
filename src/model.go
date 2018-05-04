@@ -21,3 +21,9 @@ type Entity interface {
 	GetName() string
 	GetKind() EntityKind
 }
+
+// SearchResult .
+type SearchResult interface {
+	GetEntity() Entity
+	GetSequences() []*MatchedSequence
+}

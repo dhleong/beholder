@@ -15,7 +15,7 @@ type ChoicesUI struct {
 }
 
 // Set the choices
-func (c *ChoicesUI) Set(choices []beholder.Entity) {
+func (c *ChoicesUI) Set(choices []beholder.SearchResult) {
 	oldSelected := c.list.GetCurrentItem()
 
 	c.list.Clear()

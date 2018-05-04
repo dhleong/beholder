@@ -13,18 +13,21 @@ type QueryMatcher struct {
 
 // MatchResult is the result of
 type MatchResult struct {
-	Matched bool
-	Score   float32
+	Matched   bool
+	Score     float32
+	Sequences []*MatchedSequence
 }
 
-type matchedSequence struct {
-	start        int
-	end          int
+// MatchedSequence represents a range of an Entity's
+// name that matched the query string
+type MatchedSequence struct {
+	Start        int
+	End          int
 	startsOnWord bool
 }
 
-func (s *matchedSequence) length() int {
-	return s.end - s.start
+func (s *MatchedSequence) length() int {
+	return s.End - s.Start
 }
 
 // NewQueryMatcher .
@@ -39,10 +42,10 @@ func NewQueryMatcher(query string) *QueryMatcher {
 func (q *QueryMatcher) Match(value string) MatchResult {
 	runes := []rune(value)
 
-	sequences := make([]*matchedSequence, 0, 8)
+	sequences := make([]*MatchedSequence, 0, 8)
 
 	longestSubsequence := 0
-	var currentSequence *matchedSequence
+	var currentSequence *MatchedSequence
 
 	words := 0
 	wordStartsMatched := 0
@@ -67,11 +70,11 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 
 		if unicode.ToUpper(runes[i]) == q.upperRunes[j] {
 			if currentSequence != nil {
-				currentSequence.end++
+				currentSequence.End++
 			} else {
-				currentSequence = &matchedSequence{
-					start:        j,
-					end:          j + 1,
+				currentSequence = &MatchedSequence{
+					Start:        i,
+					End:          i + 1,
 					startsOnWord: enteredWord,
 				}
 				sequences = append(sequences, currentSequence)
@@ -106,7 +109,7 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 	// base score on longest subsequence
 	score := float32(longestSubsequence) / (float32(len(runes)) / 2.0)
 
-	if len(sequences) == 1 && sequences[0].start == 0 {
+	if len(sequences) == 1 && sequences[0].Start == 0 {
 		// bonus for matching at the beginning
 		score *= float32(sequences[0].length())
 	}
@@ -117,7 +120,8 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 	}
 
 	return MatchResult{
-		Matched: j == len(q.runes),
-		Score:   score,
+		Matched:   j == len(q.runes),
+		Score:     score,
+		Sequences: sequences,
 	}
 }

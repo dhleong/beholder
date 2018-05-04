@@ -126,6 +126,19 @@ func TestQueryMatcher(t *testing.T) {
 				"Melf's Acid Arrow",
 			)
 		})
+
+		Convey("should have correct sequences", func() {
+			r := NewQueryMatcher("mcw").Match("Mass Cure Wounds")
+			So(r.Sequences, ShouldHaveLength, 3)
+			So(r.Sequences[0].Start, ShouldEqual, 0)
+			So(r.Sequences[0].End, ShouldEqual, 1)
+
+			So(r.Sequences[1].Start, ShouldEqual, 5)
+			So(r.Sequences[1].End, ShouldEqual, 6)
+
+			So(r.Sequences[2].Start, ShouldEqual, 10)
+			So(r.Sequences[2].End, ShouldEqual, 11)
+		})
 	})
 
 }

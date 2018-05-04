@@ -11,7 +11,7 @@ import (
 type EntityList struct {
 	*tview.Box
 
-	entities []beholder.Entity
+	entities []beholder.SearchResult
 
 	onChanged   func(entity beholder.Entity)
 	currentItem int
@@ -26,7 +26,7 @@ func NewList() *EntityList {
 }
 
 // AddItem .
-func (l *EntityList) AddItem(entity beholder.Entity) {
+func (l *EntityList) AddItem(entity beholder.SearchResult) {
 	l.entities = append(l.entities, entity)
 }
 
@@ -64,7 +64,7 @@ func (l *EntityList) GetCurrentEntity() beholder.Entity {
 		return nil
 	}
 
-	return l.entities[l.currentItem]
+	return l.entities[l.currentItem].GetEntity()
 }
 
 // GetItemCount .
@@ -81,7 +81,7 @@ func (l *EntityList) Clear() {
 }
 
 // SetEntities sets the entities
-func (l *EntityList) SetEntities(entities []beholder.Entity) {
+func (l *EntityList) SetEntities(entities []beholder.SearchResult) {
 	l.entities = entities
 	if l.currentItem >= len(entities) {
 		l.currentItem = len(entities) - 1
@@ -106,7 +106,9 @@ func (l *EntityList) Draw(screen tcell.Screen) {
 
 	rowY := bottomLimit
 	for i := l.offset; rowY >= y && i < len(l.entities); i++ {
-		e := l.entities[i]
+		result := l.entities[i]
+		e := result.GetEntity()
+		name := e.GetName()
 
 		rowY--
 		itemX := x + 2
@@ -115,21 +117,34 @@ func (l *EntityList) Draw(screen tcell.Screen) {
 			bgStyle,
 		)
 		tview.Print(
-			screen, e.GetName(), itemX, rowY, itemWidth,
+			screen, name, itemX, rowY, itemWidth,
 			tview.AlignLeft, tcell.ColorDefault,
 		)
 
+		for _, seq := range result.GetSequences() {
+			for bx := seq.Start; bx < seq.End; bx++ {
+				m, c, style, _ := screen.GetContent(itemX+bx, rowY)
+				style = style.Foreground(Colors.Highlight)
+				screen.SetContent(itemX+bx, rowY, m, c, style)
+			}
+		}
+
 		// "selected" background
 		if i == l.currentItem {
-			textWidth := tview.StringWidth(e.GetName())
+			textWidth := tview.StringWidth(name)
 			textEnd := itemX + textWidth
 
 			for bx := 1; bx < textEnd && bx < width; bx++ {
 				m, c, style, _ := screen.GetContent(x+bx, rowY)
 
-				style = style.
-					Background(Colors.SelectedBackground).
-					Foreground(Colors.SelectedFg)
+				fg, _, _ := style.Decompose()
+				style = style.Background(Colors.SelectedBackground)
+
+				if fg == Colors.Highlight {
+					style = style.Foreground(Colors.SelectedHighlight)
+				} else {
+					style = style.Foreground(Colors.SelectedFg)
+				}
 				screen.SetContent(x+bx, rowY, m, c, style)
 			}
 		}

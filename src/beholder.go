@@ -13,7 +13,7 @@ const queryLimit int = 1024
 type QueryListener func(query string)
 
 // ResultsListener .
-type ResultsListener func([]Entity)
+type ResultsListener func([]SearchResult)
 
 // App represents the main app state
 type App struct {
@@ -35,7 +35,16 @@ type App struct {
 
 type scoredEntity struct {
 	Entity
-	score float32
+	sequences []*MatchedSequence
+	score     float32
+}
+
+func (e *scoredEntity) GetEntity() Entity {
+	return e.Entity
+}
+
+func (e *scoredEntity) GetSequences() []*MatchedSequence {
+	return e.sequences
 }
 
 // NewApp creates a new App using the given DataSource
@@ -74,7 +83,7 @@ func NewApp(dataSource DataSource) (*App, error) {
 		if len(query) > 0 {
 			app.OnResults(app.Query(query))
 		} else {
-			app.OnResults([]Entity{})
+			app.OnResults([]SearchResult{})
 		}
 	}
 
@@ -89,13 +98,17 @@ func NewAppWithEntities(entities []Entity) *App {
 }
 
 // Query attempts to find Entities that match the query
-func (a *App) Query(query string) []Entity {
+func (a *App) Query(query string) []SearchResult {
 	qm := NewQueryMatcher(query)
-	results := make([]*scoredEntity, 0, queryLimit)
+	results := make([]SearchResult, 0, queryLimit)
 	for _, e := range a.entities {
 		m := qm.Match(e.GetName())
 		if m.Matched {
-			results = append(results, &scoredEntity{e, m.Score})
+			results = append(results, &scoredEntity{
+				e,
+				m.Sequences,
+				m.Score,
+			})
 
 			if len(results) >= queryLimit {
 				break
@@ -105,14 +118,10 @@ func (a *App) Query(query string) []Entity {
 
 	// score results
 	sort.Slice(results, func(i, j int) bool {
-		return results[i].score > results[j].score
+		iScore := results[i].(*scoredEntity).score
+		jScore := results[j].(*scoredEntity).score
+		return iScore > jScore
 	})
 
-	// copy the sorted Entities
-	scored := make([]Entity, 0, len(results))
-	for _, se := range results {
-		scored = append(scored, se.Entity)
-	}
-
-	return scored
+	return results
 }

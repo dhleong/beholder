@@ -176,7 +176,7 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 
 	choices.SetChangedFunc(entity.Set)
 
-	app.OnResults = func(results []beholder.Entity) {
+	app.OnResults = func(results []beholder.SearchResult) {
 		// it'd be nice to have HomeUI handle this,
 		// but even having an empty view in the grid
 		// messes with drawing the other elements...
