@@ -40,7 +40,7 @@ func (l *EntityList) SetCurrentItem(item int) {
 	if item < 0 {
 		l.currentItem = 0
 		l.offset = 0
-		l.onChanged(nil)
+		l.onChanged(l.GetCurrentEntity())
 		return
 	} else if item >= len(l.entities) {
 		item = len(l.entities) - 1
