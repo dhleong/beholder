@@ -60,6 +60,7 @@ var MonsterRenderer = &EntityRenderer{
 			languagesRow = fmt.Sprintf("\n[::b]Languages[::-]: %s", m.Languages)
 		}
 
+		statFormat := "%2d[::bd]%s[::-]"
 		return []string{
 			"{size}", sizes[m.Size],
 			"{type}", m.Type,
@@ -71,12 +72,12 @@ var MonsterRenderer = &EntityRenderer{
 			"{ac}", m.ArmorClass,
 			"{hp}", m.HP,
 			"{speed}", m.Speed,
-			"{str}", fmt.Sprintf("%3d", m.Str),
-			"{dex}", fmt.Sprintf("%3d", m.Dex),
-			"{con}", fmt.Sprintf("%3d", m.Con),
-			"{int}", fmt.Sprintf("%3d", m.Int),
-			"{wis}", fmt.Sprintf("%3d", m.Wis),
-			"{cha}", fmt.Sprintf("%3d", m.Cha),
+			"{str}", fmt.Sprintf(statFormat, m.Str, formatModifier(m.Str)),
+			"{dex}", fmt.Sprintf(statFormat, m.Dex, formatModifier(m.Dex)),
+			"{con}", fmt.Sprintf(statFormat, m.Con, formatModifier(m.Con)),
+			"{int}", fmt.Sprintf(statFormat, m.Int, formatModifier(m.Int)),
+			"{wis}", fmt.Sprintf(statFormat, m.Wis, formatModifier(m.Wis)),
+			"{cha}", fmt.Sprintf(statFormat, m.Cha, formatModifier(m.Cha)),
 			"{passive}", strconv.Itoa(m.PassivePerception),
 			"{saves-row}", savesRow,
 			"{skills-row}", skillsRow,
@@ -94,12 +95,24 @@ var MonsterRenderer = &EntityRenderer{
 [::b]Speed[::-]: {speed}
 [::b]Passive Perception[::-]: {passive}
 
-[::b]STR DEX CON INT WIS CHA[::-]
-[::b]{str} {dex} {con} {int} {wis} {cha}[::-]
+[::b] STR    DEX    CON    INT    WIS    CHA[::-]
+[::-]{str}  {dex}  {con}  {int}  {wis}  {cha}[::-]
 {immunities}{saves-row}{senses-row}{skills-row}{languages-row}
 
 {traits}
 
 {actions}
 `,
+}
+
+func formatModifier(stat int) string {
+	modifier := (stat - 10) / 2
+	if modifier == 0 {
+		return " +0"
+	} else if modifier < 0 {
+		return fmt.Sprintf("%-3d", modifier)
+	} else {
+		modifierStr := fmt.Sprintf("+%d", modifier)
+		return fmt.Sprintf("%3s", modifierStr)
+	}
 }
