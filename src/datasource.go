@@ -2,6 +2,7 @@ package beholder
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -10,7 +11,10 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-const compendiumURL = "https://raw.githubusercontent.com/storskegg/DnDAppFiles/master/Compendiums/Full%20Compendium.xml"
+var compendiums = map[string]string{
+	"data.xml":        "https://raw.githubusercontent.com/storskegg/DnDAppFiles/master/Compendiums/Full%20Compendium.xml",
+	"xgte-spells.xml": "https://raw.githubusercontent.com/storskegg/DnDAppFiles/master/Spells/XGtE%20Spells.xml",
+}
 
 // DataSource abstracts fetching and loading Entities
 type DataSource interface {
@@ -19,24 +23,35 @@ type DataSource interface {
 
 // NewDataSource creates a new default DataSource
 func NewDataSource() (DataSource, error) {
-	localPath, err := homedir.Expand("~/.config/beholder/data.xml")
-	if err != nil {
-		return nil, err
+	sources := make([]DataSource, 0, 3+len(compendiums))
+
+	for localName, url := range compendiums {
+		sources = append(sources, newNetworkDataSource(url, localName))
 	}
 
-	return MergeDataSources(
-		&networkDataSource{
-			compendiumURL: compendiumURL,
-			localPath:     localPath,
-			delegate: &diskDataSource{
-				localPath: localPath,
-			},
-		},
-
+	sources = append(sources,
 		ActionsDataSource,
 		ConditionsDataSource,
 		RuleDataSource,
-	), nil
+	)
+
+	return MergeDataSources(sources...), nil
+}
+
+func newNetworkDataSource(url, localName string) *networkDataSource {
+	relativePath := fmt.Sprintf("~/.config/beholder/%s", localName)
+	localPath, err := homedir.Expand(relativePath)
+	if err != nil {
+		return nil
+	}
+
+	return &networkDataSource{
+		compendiumURL: url,
+		localPath:     localPath,
+		delegate: &diskDataSource{
+			localPath: localPath,
+		},
+	}
 }
 
 type staticDataSource struct {
