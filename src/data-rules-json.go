@@ -77,7 +77,9 @@ func parseRulesJSON(reader *bufio.Reader) ([]Entity, error) {
 	}
 
 	_, generated := generateEntities(RuleEntity, rootRule, true, ignoreSections)
-	return generated, nil
+
+	// NOTE: skip the containing, nil rule
+	return generated[1:], nil
 }
 
 func readRuleSection(decoder *json.Decoder, header string) (*ruleParts, error) {

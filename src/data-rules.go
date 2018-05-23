@@ -13,6 +13,10 @@ func (r ruleEntity) GetKind() EntityKind {
 	return r.kind
 }
 
+func (r ruleEntity) String() string {
+	return fmt.Sprintf("Rule{%s}", r.Name)
+}
+
 // ruleParts is a recursive structure representing a Rule and
 // its sub-rules. One Entity will be generated for top-most Rule
 // (IE the one which is not part of any other rule) including all
