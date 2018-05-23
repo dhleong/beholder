@@ -27,7 +27,8 @@ type EntityUI struct {
 	UI         tview.Primitive
 	KeyHandler func(*tcell.EventKey) *tcell.EventKey
 
-	text *tview.TextView
+	text    *tview.TextView
+	current beholder.Entity
 }
 
 // NewEntityUI .
@@ -58,6 +59,13 @@ func (e *EntityUI) Set(entity beholder.Entity) {
 		e.text.SetText("")
 		return
 	}
+
+	if e.current != nil &&
+		e.current.GetKind() == entity.GetKind() &&
+		e.current.GetName() == entity.GetName() {
+		return
+	}
+	e.current = entity
 
 	r := entityRenderers[entity.GetKind()]
 	if r != nil {

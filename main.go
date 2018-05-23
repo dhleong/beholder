@@ -48,9 +48,22 @@ func main() {
 	parseOptions()
 
 	dataSource, err := beholder.NewDataSource()
+	// dataSource, err := beholder.NewJSONRulesSource()
 	if err != nil {
 		panic(err)
 	}
+
+	// es, err := dataSource.GetEntities()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, e := range es {
+	// 	fmt.Println(e.GetName())
+	// }
+	// fmt.Println(len(es))
+	// if true {
+	// 	panic(fmt.Errorf("HI"))
+	// }
 
 	app, err := beholder.NewApp(dataSource)
 	if err != nil {

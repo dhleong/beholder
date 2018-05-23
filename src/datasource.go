@@ -29,10 +29,16 @@ func NewDataSource() (DataSource, error) {
 		sources = append(sources, newNetworkDataSource(url, localName))
 	}
 
+	jsonRulesSource, err := NewJSONRulesSource()
+	if err != nil {
+		return nil, err
+	}
+
 	sources = append(sources,
 		ActionsDataSource,
 		ConditionsDataSource,
-		RuleDataSource,
+		// RuleDataSource,
+		jsonRulesSource,
 	)
 
 	return MergeDataSources(sources...), nil
@@ -46,8 +52,8 @@ func newNetworkDataSource(url, localName string) *networkDataSource {
 	}
 
 	return &networkDataSource{
-		compendiumURL: url,
-		localPath:     localPath,
+		URL:       url,
+		localPath: localPath,
 		delegate: &diskDataSource{
 			localPath: localPath,
 		},
@@ -68,8 +74,8 @@ func NewStaticDataSource(entities []Entity) DataSource {
 }
 
 type networkDataSource struct {
-	compendiumURL string
-	localPath     string
+	URL       string
+	localPath string
 
 	delegate DataSource
 }
@@ -97,7 +103,7 @@ func (d *networkDataSource) GetEntities() ([]Entity, error) {
 		defer out.Close()
 
 		// request the remote file
-		resp, err := http.Get(d.compendiumURL)
+		resp, err := http.Get(d.URL)
 		if err != nil {
 			return nil, err
 		}

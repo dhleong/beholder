@@ -22,8 +22,8 @@ type ruleParts struct {
 	parts []interface{}
 }
 
-func rule(name string, parts ...interface{}) ruleParts {
-	return ruleParts{
+func rule(name string, parts ...interface{}) *ruleParts {
+	return &ruleParts{
 		name,
 		parts,
 	}
@@ -35,7 +35,12 @@ var section = rule
 // Generate entities given ruleParts, returning the first
 // ruleEntity and a slice of *all* entities generated (*including*
 // the first one)
-func generateEntities(kind EntityKind, part ruleParts, isTop bool) (ruleEntity, []Entity) {
+func generateEntities(
+	kind EntityKind,
+	part *ruleParts,
+	isTop bool,
+	ignoredSections map[string]bool,
+) (ruleEntity, []Entity) {
 	// NOTE: the top-level entity is always a RuleEntity
 	var actualKind EntityKind
 	if isTop {
@@ -56,10 +61,14 @@ func generateEntities(kind EntityKind, part ruleParts, isTop bool) (ruleEntity, 
 		case string:
 			text = append(text, v)
 
-		case ruleParts:
+		case *ruleParts:
+			if _, ok := ignoreSections[v.name]; ok {
+				continue
+			}
+
 			// NOTE: if we wanted to get fancy, we could replace all the
 			// headers fromt he child entity with, eg: h2 -> h3
-			childEntity, newDescendants := generateEntities(kind, v, false)
+			childEntity, newDescendants := generateEntities(kind, v, false, ignoreSections)
 			generated = append(generated, newDescendants...)
 
 			text = append(text,
@@ -81,11 +90,12 @@ func generateEntities(kind EntityKind, part ruleParts, isTop bool) (ruleEntity, 
 // rulesDataSource generates a DataSource containing a bunch of parts.
 // The top-level Entity will always be RuleEntity, but any child entities
 // will use the provided `kind`
-func rulesDataSource(kind EntityKind, rules ...ruleParts) DataSource {
+func rulesDataSource(kind EntityKind, rules ...*ruleParts) DataSource {
 	entities := make([]Entity, 0, len(rules))
+	ignored := map[string]bool{}
 
 	for _, part := range rules {
-		_, generated := generateEntities(kind, part, true)
+		_, generated := generateEntities(kind, part, true, ignored)
 		entities = append(entities, generated...)
 	}
 
