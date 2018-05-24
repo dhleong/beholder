@@ -40,14 +40,14 @@ func (l *EntityList) SetCurrentItem(item int) {
 	if item < 0 {
 		l.currentItem = 0
 		l.offset = 0
-		l.onChanged(l.GetCurrentEntity())
+		l.dispatchChanged(l.GetCurrentEntity())
 		return
 	} else if item >= len(l.entities) {
 		item = len(l.entities) - 1
 	}
 
 	l.currentItem = item
-	l.onChanged(l.GetCurrentEntity())
+	l.dispatchChanged(l.GetCurrentEntity())
 
 	// scroll the view to make currentItem visible
 	_, _, _, height := l.Box.GetInnerRect()
@@ -77,7 +77,7 @@ func (l *EntityList) Clear() {
 	l.entities = nil
 	l.currentItem = 0
 	l.offset = 0
-	l.onChanged(nil)
+	l.dispatchChanged(nil)
 }
 
 // SetEntities sets the entities
@@ -86,7 +86,7 @@ func (l *EntityList) SetEntities(entities []beholder.SearchResult) {
 	if l.currentItem >= len(entities) {
 		l.currentItem = len(entities) - 1
 	}
-	l.onChanged(l.GetCurrentEntity())
+	l.dispatchChanged(l.GetCurrentEntity())
 }
 
 // SetChangedFunc .
@@ -150,4 +150,10 @@ func (l *EntityList) Draw(screen tcell.Screen) {
 		}
 	}
 
+}
+
+func (l *EntityList) dispatchChanged(entity beholder.Entity) {
+	if l.onChanged != nil {
+		l.onChanged(entity)
+	}
 }

@@ -64,6 +64,10 @@ func formatText(text []string) string {
 		"</h2>", "[::-]",
 		"<b>", "[::b]",
 		"</b>", "[::-]",
+		"<i>", "[::bu]",
+		"</i>", "[::-]",
+		"<u>", "[::u]",
+		"</u>", "[::-]",
 	).Replace(strings.Join(text, "\n"))
 }
 

@@ -51,6 +51,7 @@ func TestGenerateEntities(t *testing.T) {
 				),
 			),
 			true,
+			map[string]bool{},
 		)
 
 		Convey("should merge sections and create headers", func() {

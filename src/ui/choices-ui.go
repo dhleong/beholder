@@ -11,17 +11,23 @@ import (
 type ChoicesUI struct {
 	UI tview.Primitive
 
-	list *tui.EntityList
+	changedFunc func(entity beholder.Entity)
+	list        *tui.EntityList
 }
 
 // Set the choices
 func (c *ChoicesUI) Set(choices []beholder.SearchResult) {
 	oldSelected := c.list.GetCurrentItem()
 
+	// remove changed func briefly to avoid empty callback
+	c.list.SetChangedFunc(nil)
+
 	c.list.Clear()
 	for _, entity := range choices {
 		c.list.AddItem(entity)
 	}
+
+	c.list.SetChangedFunc(c.changedFunc)
 
 	// persist selected position as best as possible
 	if oldSelected < c.list.GetItemCount() {
@@ -45,6 +51,7 @@ func (c *ChoicesUI) GetSelectedEntity() beholder.Entity {
 
 // SetChangedFunc .
 func (c *ChoicesUI) SetChangedFunc(changed func(entity beholder.Entity)) {
+	c.changedFunc = changed
 	c.list.SetChangedFunc(changed)
 }
 
