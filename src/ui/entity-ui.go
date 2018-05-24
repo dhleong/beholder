@@ -48,6 +48,17 @@ func NewEntityUI() *EntityUI {
 	ui.SetFocused(false)
 
 	text.SetInputCapture(func(ev *tcell.EventKey) *tcell.EventKey {
+		switch ev.Key() {
+		case tcell.KeyRune:
+			switch ev.Rune() {
+			case 'd':
+				text.ScrollPageForward()
+				return nil
+			case 'u':
+				text.ScrollPageBackward()
+				return nil
+			}
+		}
 		return ui.KeyHandler(ev)
 	})
 

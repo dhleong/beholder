@@ -1065,10 +1065,22 @@ func (t *AsyncTextView) InputHandler() func(event *tcell.EventKey, setFocus func
 		case tcell.KeyRight:
 			t.columnOffset++
 		case tcell.KeyPgDn, tcell.KeyCtrlF:
-			t.lineOffset += t.pageSize
+			t.ScrollPageForward()
 		case tcell.KeyPgUp, tcell.KeyCtrlB:
-			t.trackEnd = false
-			t.lineOffset -= t.pageSize
+			t.ScrollPageBackward()
 		}
 	})
+}
+
+// BEGIN dhleong modification for beholder:
+
+// ScrollPageForward scrolls forward a page
+func (t *AsyncTextView) ScrollPageForward() {
+	t.lineOffset += t.pageSize
+}
+
+// ScrollPageBackward scrolls backward a page
+func (t *AsyncTextView) ScrollPageBackward() {
+	t.trackEnd = false
+	t.lineOffset -= t.pageSize
 }
