@@ -35,9 +35,7 @@ func NewDataSource() (DataSource, error) {
 	}
 
 	sources = append(sources,
-		ActionsDataSource,
 		ConditionsDataSource,
-		// RuleDataSource,
 		jsonRulesSource,
 	)
 
