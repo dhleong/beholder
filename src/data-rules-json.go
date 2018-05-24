@@ -95,7 +95,7 @@ func readRuleSection(decoder *json.Decoder, header string) (*ruleParts, error) {
 	switch v := tok.(type) {
 	case string:
 		// single string content
-		readString(v, part)
+		readString(v, part, 0)
 		return part, nil
 
 	case json.Delim:
@@ -201,7 +201,7 @@ func readContent(decoder *json.Decoder, part *ruleParts, initialNest int) error 
 			}
 
 		case string:
-			readString(v, part)
+			readString(v, part, nest)
 
 			if nest == 0 {
 				// if nest == 0, content was a single string value
@@ -283,12 +283,12 @@ func readTable(decoder *json.Decoder, part *ruleParts) error {
 	return nil
 }
 
-func readString(s string, part *ruleParts) {
+func readString(s string, part *ruleParts, nesting int) {
 	if strings.HasPrefix(s, "***") {
 		part.parts = append(part.parts, "")
 	}
 
-	part.parts = append(part.parts, formatText(s))
+	part.parts = append(part.parts, indentText(formatText(s), nesting))
 }
 
 type formatter struct {
@@ -317,7 +317,25 @@ func formatText(s string) string {
 	for _, r := range replacements {
 		s = r.regex.ReplaceAllString(s, r.replacement)
 	}
+
 	return s
+}
+
+func indentText(s string, nesting int) string {
+	if nesting <= 1 {
+		return s
+	}
+
+	// with nesting, it's a bulleted list
+	var builder bytes.Buffer
+	for i := 0; i < nesting-2; i++ {
+		builder.WriteString("  ")
+	}
+
+	builder.WriteString("• ")
+	builder.WriteString(s)
+
+	return builder.String()
 }
 
 func trimmed(s string, maxLen int) string {
