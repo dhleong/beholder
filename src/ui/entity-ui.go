@@ -27,13 +27,15 @@ type EntityUI struct {
 	UI         tview.Primitive
 	KeyHandler func(*tcell.EventKey) *tcell.EventKey
 
-	text    *tview.TextView
+	// text    *tview.TextView
+	text    *tui.AsyncTextView
 	current beholder.Entity
 }
 
 // NewEntityUI .
 func NewEntityUI() *EntityUI {
-	text := tview.NewTextView()
+	// text := tview.NewTextView()
+	text := tui.NewAsyncTextView()
 	text.SetDynamicColors(true)
 	text.SetTextColor(tcell.ColorDefault)
 	text.SetBorderColor(tui.Colors.Border)
