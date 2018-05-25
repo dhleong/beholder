@@ -771,7 +771,7 @@ func (t *AsyncTextView) reindexBuffer(fromBufferIndex, width, height int) {
 			go func() {
 				t.Lock()
 				defer t.Unlock()
-				t.reindexBuffer(bufferIndex, width, height)
+				t.reindexBuffer(bufferIndex+1, width, height)
 			}()
 			break
 		}
