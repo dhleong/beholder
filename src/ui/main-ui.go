@@ -14,7 +14,7 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 
 	pages := tview.NewPages()
 	mainGrid := tview.NewGrid() // contains topPane and input
-	topPane := tview.NewPages() // alterntes between topGrid and home
+	topPane := tview.NewPages() // alternates between topGrid and home
 	topGrid := tview.NewGrid()  // flexible container for choices + entity
 
 	help := NewHelpUI()
@@ -175,6 +175,17 @@ func NewMainUI(app *beholder.App, tapp *tview.Application) tview.Primitive {
 	}
 
 	choices.SetChangedFunc(entity.Set)
+
+	// due to changes in tview, we now have to clear the whole screen
+	// before each draw in order to keep our behavior of using the
+	// terminal's default background... This doesn't seem to have any
+	// terrible perf implications but it sure feels like a hack.
+	// See: https://github.com/rivo/tview/commit/d7d44cb0d26e6f45c3591e8f1c29956cb8a3deee
+	// and: https://github.com/rivo/tview/issues/270
+	tapp.SetBeforeDrawFunc(func(s tcell.Screen) bool {
+		s.Clear()
+		return false
+	})
 
 	app.OnResults = func(results []beholder.SearchResult) {
 		// it'd be nice to have HomeUI handle this,
