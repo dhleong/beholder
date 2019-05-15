@@ -131,7 +131,7 @@ func (l *EntityList) Draw(screen tcell.Screen) {
 
 		// "selected" background
 		if i == l.currentItem {
-			textWidth := tview.StringWidth(name)
+			textWidth := tview.TaggedStringWidth(name)
 			textEnd := itemX + textWidth
 
 			for bx := 1; bx < textEnd && bx < width; bx++ {
