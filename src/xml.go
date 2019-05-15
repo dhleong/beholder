@@ -158,6 +158,7 @@ type Monster struct {
 	Challenge string   `xml:"cr"`
 	Languages string   `xml:"languages"`
 	Actions   []*Trait `xml:"action"`
+	Legendary []*Trait `xml:"legendary"`
 }
 
 // GetKind from Entity interface

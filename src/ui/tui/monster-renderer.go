@@ -60,13 +60,25 @@ var MonsterRenderer = &EntityRenderer{
 			languagesRow = fmt.Sprintf("\n[::b]Languages[::-]: %s", m.Languages)
 		}
 
+		var allActions bytes.Buffer
+		BuildTraits(&allActions, m.Actions)
+
+		if m.Legendary != nil {
+			if allActions.Len() > 0 {
+				allActions.WriteString("\n")
+			}
+
+			allActions.WriteString("\n[::bu]Legendary Actions\n")
+			BuildTraits(&allActions, m.Legendary)
+		}
+
 		statFormat := "%2d[::bd]%s[::-]"
 		return []string{
 			"{size}", sizes[m.Size],
 			"{type}", m.Type,
 			"{cr}", m.Challenge,
 			"{immunities}", immunities.String(),
-			"{actions}", BuildTraitsString(m.Actions),
+			"{actions}", allActions.String(),
 
 			// stat block:
 			"{ac}", m.ArmorClass,

@@ -71,7 +71,29 @@ func formatText(text []string) string {
 	).Replace(strings.Join(text, "\n"))
 }
 
-// BuildTraitsString .
+// BuildTraits .
+func BuildTraits(traitsBuilder *bytes.Buffer, traits []*beholder.Trait) {
+	for i, trait := range traits {
+		if traitsBuilder.Len() > 0 {
+			traitsBuilder.WriteString("\n")
+		}
+
+		if len(trait.Name) > 0 {
+			traitsBuilder.WriteString("[::b]")
+			traitsBuilder.WriteString(trait.Name)
+			traitsBuilder.WriteString("\n")
+		}
+
+		traitsBuilder.WriteString(strings.Join(trait.GetText(), "\n"))
+
+		if i < len(traits)-1 {
+			traitsBuilder.WriteString("\n")
+		}
+	}
+}
+
+// BuildTraitsString is a convenience wrapper for BuildTraits when
+// you have a single source of Traits and want a string
 func BuildTraitsString(traits []*beholder.Trait) string {
 	if traits == nil {
 		return ""
@@ -79,19 +101,7 @@ func BuildTraitsString(traits []*beholder.Trait) string {
 
 	var traitsBuilder bytes.Buffer
 
-	for i, trait := range traits {
-		if i > 0 {
-			traitsBuilder.WriteString("\n")
-		}
-		traitsBuilder.WriteString("[::b]")
-		traitsBuilder.WriteString(trait.Name)
-		traitsBuilder.WriteString("\n")
-		traitsBuilder.WriteString(strings.Join(trait.GetText(), "\n"))
-
-		if i < len(traits)-1 {
-			traitsBuilder.WriteString("\n")
-		}
-	}
+	BuildTraits(&traitsBuilder, traits)
 
 	return traitsBuilder.String()
 }
