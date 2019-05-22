@@ -11,6 +11,7 @@ const (
 	FeatureEntity
 	ItemEntity
 	MonsterEntity
+	ReferenceListEntity
 	RuleEntity
 	SpellEntity
 	TraitEntity

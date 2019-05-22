@@ -39,7 +39,10 @@ func NewDataSource() (DataSource, error) {
 		jsonRulesSource,
 	)
 
-	return MergeDataSources(sources...), nil
+	merged := MergeDataSources(sources...)
+	withSpellLists := NewSpellListsSource(merged)
+
+	return withSpellLists, nil
 }
 
 func newNetworkDataSource(url, localName string) *networkDataSource {

@@ -11,15 +11,16 @@ import (
 )
 
 var entityRenderers = map[beholder.EntityKind]*tui.EntityRenderer{
-	beholder.ActionEntity:    tui.NewSimpleRenderer(" Action"),
-	beholder.ConditionEntity: tui.NewSimpleRenderer(" Condition"),
-	beholder.FeatEntity:      tui.NewSimpleRenderer(" Feat"),
-	beholder.FeatureEntity:   tui.FeatureRenderer,
-	beholder.ItemEntity:      tui.ItemRenderer,
-	beholder.MonsterEntity:   tui.MonsterRenderer,
-	beholder.RuleEntity:      tui.NewSimpleRenderer(" Rule"),
-	beholder.SpellEntity:     tui.SpellRenderer,
-	beholder.TraitEntity:     tui.TraitRenderer,
+	beholder.ActionEntity:        tui.NewSimpleRenderer(" Action"),
+	beholder.ConditionEntity:     tui.NewSimpleRenderer(" Condition"),
+	beholder.FeatEntity:          tui.NewSimpleRenderer(" Feat"),
+	beholder.FeatureEntity:       tui.FeatureRenderer,
+	beholder.ItemEntity:          tui.ItemRenderer,
+	beholder.MonsterEntity:       tui.MonsterRenderer,
+	beholder.ReferenceListEntity: tui.ReferenceListRenderer,
+	beholder.RuleEntity:          tui.NewSimpleRenderer(" Rule"),
+	beholder.SpellEntity:         tui.SpellRenderer,
+	beholder.TraitEntity:         tui.TraitRenderer,
 }
 
 // EntityUI .
