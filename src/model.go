@@ -11,6 +11,7 @@ const (
 	FeatureEntity
 	ItemEntity
 	MonsterEntity
+	ReferenceListEntity
 	RuleEntity
 	SpellEntity
 	TraitEntity
@@ -26,4 +27,21 @@ type Entity interface {
 type SearchResult interface {
 	GetEntity() Entity
 	GetSequences() []*MatchedSequence
+}
+
+// ReferenceList is a dynamic entity that points to other Entities
+type ReferenceList struct {
+	Named
+	References []Entity
+}
+
+// GetKind from Entity interface
+func (s ReferenceList) GetKind() EntityKind {
+	return ReferenceListEntity
+}
+
+// A CategorizedEntity belongs to a category. This is primarily used
+// in conjunction with ReferenceList
+type CategorizedEntity interface {
+	GetCategory() string
 }

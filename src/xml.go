@@ -172,6 +172,12 @@ type Race struct {
 	traitor
 }
 
+// SpellUser describes a Class that can use a Spell
+type SpellUser struct {
+	Named
+	Variant string
+}
+
 // Spell .
 type Spell struct {
 	Named
@@ -184,6 +190,7 @@ type Spell struct {
 	Components string  `xml:"components"`
 	Duration   string  `xml:"duration"`
 	Classes    string  `xml:"classes"`
+	SpellUsers []SpellUser
 }
 
 // GetKind from Entity interface
@@ -204,6 +211,7 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 
 	// it'd be nice if I could just `append(result, Spells...)` :\
 	for _, entity := range compendium.Spells {
+		parseSpellUsers(&entity)
 		result = append(result, entity)
 	}
 	for _, entity := range compendium.Items {
@@ -250,4 +258,26 @@ func ParseXML(reader io.Reader) ([]Entity, error) {
 	}
 
 	return result, nil
+}
+
+func parseSpellUsers(spell *Spell) {
+	rawClassList := strings.Split(spell.Classes, ",")
+	for _, raw := range rawClassList {
+		user := SpellUser{}
+
+		variantStartIdx := strings.IndexRune(raw, '(')
+		if variantStartIdx != -1 {
+			// variant
+			end := strings.LastIndex(raw, ")")
+			user.Variant = raw[variantStartIdx+1 : end]
+
+			user.Name = strings.TrimSpace(raw[0:variantStartIdx])
+		} else {
+			user.Name = raw
+		}
+
+		user.Name = strings.TrimSpace(user.Name)
+
+		spell.SpellUsers = append(spell.SpellUsers, user)
+	}
 }
