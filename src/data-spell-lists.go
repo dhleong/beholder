@@ -3,6 +3,7 @@ package beholder
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 type spellListsSource struct {
@@ -53,6 +54,23 @@ func (s *spellListsSource) GetEntities() ([]Entity, error) {
 		extractClassSpells(classToSpells, spell)
 	}
 
+	// now that we have all the class names, remove
+	// any existing spell lists
+	resultEntities := make([]Entity, 0, len(entities))
+	for _, e := range entities {
+		name := e.GetName()
+		if strings.HasSuffix(name, " Spells") {
+			className := name[0:strings.Index(name, " Spells")]
+			if _, ok := classToSpells[className]; ok {
+				// we have class spells for this class; don't include it!
+				continue
+			}
+		}
+
+		// normal case; copy over the entity
+		resultEntities = append(resultEntities, e)
+	}
+
 	for class, spells := range classToSpells {
 		// convert to a slice of Entity interfaces
 		spellEntities := make([]Entity, 0, len(spells))
@@ -66,13 +84,13 @@ func (s *spellListsSource) GetEntities() ([]Entity, error) {
 			return compareSpells(a.Spell, b.Spell)
 		})
 
-		entities = append(entities, &ReferenceList{
+		resultEntities = append(resultEntities, &ReferenceList{
 			Named:      Named{class + " Spells"},
 			References: spellEntities,
 		})
 	}
 
-	return entities, nil
+	return resultEntities, nil
 }
 
 // NewSpellListsSource creates a dynamic DataSource that
