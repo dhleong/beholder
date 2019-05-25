@@ -1,6 +1,7 @@
 package beholder
 
 import (
+	"bytes"
 	"fmt"
 	"sort"
 	"strings"
@@ -25,7 +26,28 @@ func (c ClassSpell) GetKind() EntityKind {
 
 // GetName from Entity interface
 func (c ClassSpell) GetName() string {
-	return c.Spell.GetName()
+	var text bytes.Buffer
+
+	text.WriteString(c.Spell.GetName())
+
+	if c.VariantsOnly && len(c.Variants) > 0 {
+		text.WriteString(" <b>(")
+
+		first := true
+		for _, v := range c.Variants {
+			if first {
+				first = false
+			} else {
+				text.WriteString(", ")
+			}
+
+			text.WriteString(v)
+		}
+
+		text.WriteString(")</b>")
+	}
+
+	return text.String()
 }
 
 // GetCategory from CategorizedEntity interface

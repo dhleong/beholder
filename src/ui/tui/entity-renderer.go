@@ -55,8 +55,7 @@ func contains(haystack []string, needle string) bool {
 	return false
 }
 
-func formatText(text []string) string {
-	// doesn't allow for nesting, but that's okay for now
+func formatString(text string) string {
 	return strings.NewReplacer(
 		"<h1>", "[::b]",
 		"</h1>", "[::-]",
@@ -68,7 +67,12 @@ func formatText(text []string) string {
 		"</i>", "[::-]",
 		"<u>", "[::u]",
 		"</u>", "[::-]",
-	).Replace(strings.Join(text, "\n"))
+	).Replace(text)
+}
+
+func formatText(text []string) string {
+	// doesn't allow for nesting, but that's okay for now
+	return formatString(strings.Join(text, "\n"))
 }
 
 // BuildTraits .

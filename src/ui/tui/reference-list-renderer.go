@@ -1,7 +1,7 @@
 package tui
 
 import (
-	"strings"
+	"bytes"
 
 	beholder "github.com/dhleong/beholder/src"
 )
@@ -11,7 +11,7 @@ var ReferenceListRenderer = &EntityRenderer{
 	replacements: func(e beholder.Entity) []string {
 		r := e.(*beholder.ReferenceList)
 
-		var text strings.Builder
+		var text bytes.Buffer
 		lastCategory := ""
 		hasAnyCategory := false
 
@@ -38,7 +38,7 @@ var ReferenceListRenderer = &EntityRenderer{
 				text.WriteString("  ")
 			}
 
-			text.WriteString(ref.GetName())
+			text.WriteString(formatString(ref.GetName()))
 			text.WriteString("\n")
 		}
 
