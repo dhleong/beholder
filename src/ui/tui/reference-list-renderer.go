@@ -12,8 +12,32 @@ var ReferenceListRenderer = &EntityRenderer{
 		r := e.(*beholder.ReferenceList)
 
 		var text strings.Builder
+		lastCategory := ""
+		hasAnyCategory := false
 
 		for _, ref := range r.References {
+			if categorized, ok := ref.(beholder.CategorizedEntity); ok {
+				hasAnyCategory = true
+				category := categorized.GetCategory()
+				if category != lastCategory {
+					lastCategory = category
+
+					if text.Len() > 0 {
+						text.WriteString("\n")
+					}
+
+					text.WriteString(`[::bu]`)
+					text.WriteString(category)
+					text.WriteString(`[-:-:-]`)
+					text.WriteString(":\n\n")
+				}
+			}
+
+			if hasAnyCategory {
+				// indent the contents
+				text.WriteString("  ")
+			}
+
 			text.WriteString(ref.GetName())
 			text.WriteString("\n")
 		}

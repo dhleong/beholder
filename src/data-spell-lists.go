@@ -1,6 +1,9 @@
 package beholder
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 type spellListsSource struct {
 	delegate DataSource
@@ -24,15 +27,13 @@ func (c ClassSpell) GetName() string {
 	return c.Spell.GetName()
 }
 
-// ReferenceList is a dynamic entity that points to other Entities
-type ReferenceList struct {
-	Named
-	References []Entity
-}
+// GetCategory from CategorizedEntity interface
+func (c ClassSpell) GetCategory() string {
+	if c.Spell.Level == 0 {
+		return "Cantrips"
+	}
 
-// GetKind from Entity interface
-func (s ReferenceList) GetKind() EntityKind {
-	return ReferenceListEntity
+	return fmt.Sprintf("Level %d Spells", c.Spell.Level)
 }
 
 func (s *spellListsSource) GetEntities() ([]Entity, error) {
