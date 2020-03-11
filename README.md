@@ -3,6 +3,10 @@ beholder [![Build Status](http://img.shields.io/travis/dhleong/beholder.svg?styl
 
 *A CLI tool for D&D players*
 
+<a href="https://asciinema.org/a/myE6rTzrYAKNUOM0ofDAguuxG" target="_blank">
+<img width="480" alt="Screen Shot 2020-03-11 at 10 36 52 AM" src="https://user-images.githubusercontent.com/816150/76428649-53252e80-6384-11ea-8bb4-62e3d80d1eda.png">
+</a>
+
 ## What?
 
 Beholder provides an ultra-fast, "fuzzy" search interface to just about anything
