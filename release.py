@@ -174,7 +174,7 @@ print "Updating homebrew..."
 tarUrl = 'https://github.com/dhleong/beholder/archive/%s.tar.gz' % version
 tarSha = sha256(tarUrl)
 
-homebrewConfig = github.Config("dhleong/homebrew-beholder")
+homebrewConfig = github.Config("dhleong/homebrew-tap")
 formulaFile = github.RepoFile("/Formula/beholder.rb", config=homebrewConfig)
 oldContents = formulaFile.read()
 
