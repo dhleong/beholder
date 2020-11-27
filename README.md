@@ -27,8 +27,7 @@ Beholder is written in [Go][3], so you can also `go get` it:
 
 On macOS you can install it via [homebrew][4]:
 
-    brew tap dhleong/beholder
-    brew install beholder
+    brew install dhleong/tap/beholder
 
 [1]: https://www.youtube.com/watch?v=byva0hOj8CU
 [2]: https://github.com/dhleong/beholder/releases/latest
