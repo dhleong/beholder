@@ -1,6 +1,6 @@
 package tui
 
-import "github.com/gdamore/tcell"
+import "github.com/gdamore/tcell/v2"
 
 // ColorScheme is a struct containing... well, you can guess
 type ColorScheme struct {
