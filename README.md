@@ -1,4 +1,4 @@
-beholder [![Build Status](http://img.shields.io/travis/dhleong/beholder.svg?style=flat)](https://travis-ci.org/dhleong/beholder)
+beholder
 =========
 
 *A CLI tool for D&D players*
