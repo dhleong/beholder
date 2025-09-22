@@ -6,7 +6,7 @@
    [clojure.string :as str]))
 
 (deps/add-deps '{:deps {com.github.dhleong/clj-hostage
-                        {:git/sha "cdb055d37fb7e21e4e0c0b63f84965dd566d0e47"}}})
+                        {:git/sha "4904ab0b4ce2f65129becf2fb879665fd9cec35c"}}})
 (require '[hostage.expect :as expect]
          '[hostage.file :as file]
          '[hostage.flow :as flow]
