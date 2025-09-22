@@ -5,13 +5,17 @@ import (
 	"unicode"
 )
 
+type Query interface {
+	Match(Entity) MatchResult
+}
+
 // QueryMatcher .
 type QueryMatcher struct {
+	queries    []Query
 	runes      []rune
 	upperRunes []rune
 }
 
-// MatchResult is the result of
 type MatchResult struct {
 	Matched   bool
 	Score     float32
@@ -32,14 +36,47 @@ func (s *MatchedSequence) length() int {
 
 // NewQueryMatcher .
 func NewQueryMatcher(query string) *QueryMatcher {
+	remainingQuery, extracted := ExtractQueries(query)
 	return &QueryMatcher{
-		[]rune(query),
-		[]rune(strings.ToUpper(query)),
+		extracted,
+		[]rune(remainingQuery),
+		[]rune(strings.ToUpper(remainingQuery)),
 	}
 }
 
-// Match .
-func (q *QueryMatcher) Match(value string) MatchResult {
+func (q *QueryMatcher) Match(entity Entity) MatchResult {
+	var result *MatchResult = nil
+
+	if len(q.runes) > 0 {
+		r := q.MatchName(entity.GetName())
+		result = &r
+	}
+
+	if len(q.queries) > 0 {
+		// If we have any Queries, the Entity must match ALL
+		// *in addition to* any provided text query
+		for _, query := range q.queries {
+			m := query.Match(entity)
+			if !m.Matched {
+				if result != nil {
+					result.Matched = false
+				}
+				break
+			} else if result == nil {
+				// If we don't have any result yet, then we did
+				// not have a query string. We found a match here
+				result = &m
+			}
+		}
+	}
+
+	if result == nil {
+		return MatchResult{Matched: false}
+	}
+	return *result
+}
+
+func (q *QueryMatcher) MatchName(value string) MatchResult {
 	runes := []rune(value)
 
 	sequences := make([]*MatchedSequence, 0, 8)
@@ -52,7 +89,7 @@ func (q *QueryMatcher) Match(value string) MatchResult {
 	inWord := true
 
 	j := 0
-	for i := 0; i < len(runes); i++ {
+	for i := range runes {
 
 		enteredWord := i == 0
 		if !unicode.IsLetter(runes[i]) {

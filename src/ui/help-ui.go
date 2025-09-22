@@ -29,6 +29,12 @@ Results will show up in the [::b]info window[::-] on the right.
 You can scroll through the results with the arrow keys up and down, or <ctrl-k> and <ctrl-j>, or <ctrl-n> and <ctrl-p>.
 
 If you can't see everything in the [::b]info window[::-], you can scroll it with the page up/page down keys, or press Enter to focus on it and get more precise scrolling.
+
+[::b]Special Search Syntax[::-]
+
+In addition to text search as described above, there are some special patterns you can use to futher narrow your query. Separate these blocks from the rest of your query with a space.
+
+- [::b]Challenge Rating[::-]: Use [::b]cr(number)[::-] (eg: [::b]cr10[::-]) to narrow down to monsters with a CR matching the provided number.
 `),
 
 	HelpPageEntity: trim(`
