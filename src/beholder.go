@@ -102,7 +102,7 @@ func (a *App) Query(query string) []SearchResult {
 	qm := NewQueryMatcher(query)
 	results := make([]SearchResult, 0, queryLimit)
 	for _, e := range a.entities {
-		m := qm.Match(e.GetName())
+		m := qm.MatchName(e.GetName())
 		if m.Matched {
 			results = append(results, &scoredEntity{
 				e,

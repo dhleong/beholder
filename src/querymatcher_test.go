@@ -8,10 +8,10 @@ import (
 )
 
 func queryMatches(query, value string) bool {
-	return NewQueryMatcher(query).Match(value).Matched
+	return NewQueryMatcher(query).MatchName(value).Matched
 }
 
-func ShouldMatch(actual interface{}, expected ...interface{}) string {
+func ShouldMatch(actual any, expected ...any) string {
 	if queryMatches(actual.(string), expected[0].(string)) {
 		return ""
 	}
@@ -19,7 +19,7 @@ func ShouldMatch(actual interface{}, expected ...interface{}) string {
 	return fmt.Sprintf("`%v` should match `%v`", actual, expected[0])
 }
 
-func ShouldNotMatch(actual interface{}, expected ...interface{}) string {
+func ShouldNotMatch(actual any, expected ...any) string {
 	if !queryMatches(actual.(string), expected[0].(string)) {
 		return ""
 	}
@@ -32,7 +32,7 @@ type comparison struct {
 	fn    func(a, b float32) bool
 }
 
-func ShouldScore(actual interface{}, expected ...interface{}) string {
+func ShouldScore(actual any, expected ...any) string {
 	qm := NewQueryMatcher(actual.(string))
 	a := expected[0].(string)
 	compare := expected[1].(*comparison)
@@ -40,14 +40,14 @@ func ShouldScore(actual interface{}, expected ...interface{}) string {
 	bs := expected[2:]
 	bMatches := make([]MatchResult, 0, len(bs))
 
-	matchA := qm.Match(a)
+	matchA := qm.MatchName(a)
 
 	if !matchA.Matched {
 		return fmt.Sprintf("Expected Matcher('%s') to match: '%v'", actual, a)
 	}
 
 	for _, b := range bs {
-		m := qm.Match(b.(string))
+		m := qm.MatchName(b.(string))
 		if !m.Matched {
 			return fmt.Sprintf("Expected Matcher('%s') to match: '%v'", actual, b)
 		}
@@ -128,7 +128,7 @@ func TestQueryMatcher(t *testing.T) {
 		})
 
 		Convey("should have correct sequences", func() {
-			r := NewQueryMatcher("mcw").Match("Mass Cure Wounds")
+			r := NewQueryMatcher("mcw").MatchName("Mass Cure Wounds")
 			So(r.Sequences, ShouldHaveLength, 3)
 			So(r.Sequences[0].Start, ShouldEqual, 0)
 			So(r.Sequences[0].End, ShouldEqual, 1)
