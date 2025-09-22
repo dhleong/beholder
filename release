@@ -23,7 +23,7 @@
 (defn- sha256-hash [bytes]
   (let [md (java.security.MessageDigest/getInstance "SHA-256")]
     (-> (.digest md bytes)
-        (biginteger)
+        (#(java.math.BigInteger. 1 %))
         (.toString 16))))
 
 (defn build-default-notes [latest-tag]
