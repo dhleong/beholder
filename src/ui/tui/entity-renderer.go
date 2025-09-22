@@ -2,6 +2,7 @@ package tui
 
 import (
 	"bytes"
+	"slices"
 	"strings"
 
 	beholder "github.com/dhleong/beholder/src"
@@ -24,7 +25,7 @@ func (r *EntityRenderer) replacer(entity beholder.Entity) *strings.Replacer {
 	replacements = append(replacements, r.replacements(entity)...)
 
 	if t, ok := entity.(beholder.Textual); ok {
-		if !contains(replacements, "{text}") {
+		if !slices.Contains(replacements, "{text}") {
 			text := t.GetText()
 			if text == nil {
 				replacements = append(replacements, "{text}", "")
@@ -43,16 +44,6 @@ func (r *EntityRenderer) replacer(entity beholder.Entity) *strings.Replacer {
 	}
 
 	return strings.NewReplacer(replacements...)
-}
-
-func contains(haystack []string, needle string) bool {
-	for _, straw := range haystack {
-		if straw == needle {
-			return true
-		}
-	}
-
-	return false
 }
 
 func formatString(text string) string {
