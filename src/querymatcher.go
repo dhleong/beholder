@@ -44,7 +44,38 @@ func NewQueryMatcher(query string) *QueryMatcher {
 	}
 }
 
-// Match .
+func (q *QueryMatcher) Match(entity Entity) MatchResult {
+	var result *MatchResult = nil
+
+	if len(q.runes) > 0 {
+		r := q.MatchName(entity.GetName())
+		result = &r
+	}
+
+	if len(q.queries) > 0 {
+		// If we have any Queries, the Entity must match ALL
+		// *in addition to* any provided text query
+		for _, query := range q.queries {
+			m := query.Match(entity)
+			if !m.Matched {
+				if result != nil {
+					result.Matched = false
+				}
+				break
+			} else if result == nil {
+				// If we don't have any result yet, then we did
+				// not have a query string. We found a match here
+				result = &m
+			}
+		}
+	}
+
+	if result == nil {
+		return MatchResult{Matched: false}
+	}
+	return *result
+}
+
 func (q *QueryMatcher) MatchName(value string) MatchResult {
 	runes := []rune(value)
 
