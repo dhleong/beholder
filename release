@@ -1,0 +1,113 @@
+#!/usr/bin/env bb
+(ns release
+  (:require
+   [babashka.deps :as deps]
+   [clojure.java.io :as io]
+   [clojure.string :as str]))
+
+(deps/add-deps '{:deps {com.github.dhleong/clj-hostage
+                        {:git/sha "a48d79446b2225355dcbd4f1160f641dd912bf40"}}})
+(require '[hostage.expect :as expect]
+         '[hostage.file :as file]
+         '[hostage.flow :as flow]
+         '[hostage.git :as git]
+         '[hostage.github :as github]
+         '[hostage.update-notes :as update-notes])
+
+(defn- slurp-bytes [url]
+  (let [out (java.io.ByteArrayOutputStream.)]
+    (with-open [in (io/input-stream url)]
+      (io/copy in out)
+      (.toByteArray out))))
+
+(defn- sha256-hash [bytes]
+  (let [md (java.security.MessageDigest/getInstance "SHA-256")]
+    (-> (.digest md bytes)
+        (biginteger)
+        (.toString 16))))
+
+(defn build-default-notes [latest-tag]
+  (update-notes/build
+   (update-notes/github-closed-issues-by-label
+    {:since-tag latest-tag})
+
+   ; Gather notes from commit messages that aren't already
+   ; referencing the issues above
+   (update-notes/with-header "**Notes:**"
+     (update-notes/git-messages-matching
+      {:invert-grep ["Fix #", "Fixes #", "Closes #"]
+       :since-tag latest-tag}))))
+
+(flow/main
+ (let [latest-tag (git/tag-latest {:branch "main"})
+       notes (file/named ".last-release-notes")
+
+       version (->> (file/content "src/beholder.go")
+                    (re-find #"const Version = \"(.*)\"")
+                    (second)
+                    (expect/>>some? "Unable to extract project version"))
+       version-tag (git/tag version)
+       compiled-files (atom [])]
+
+   (expect/falsey? (str/ends-with? version "SNAPSHOT")
+                   (str "Refusing to release SNAPSHOT version - got " version))
+
+   (expect/falsey? (git/tag-exists? version-tag)
+                   (str "Version " version " already exists"))
+
+   (file/edit notes {:build-initial-content (partial build-default-notes latest-tag)
+                     :delete-before-editing? true
+                     :ensure-created? true})
+
+   (flow/with-step {:name "Verify tests"
+                    :always-run? true
+                    :tag :tests}
+     (flow/shell "go test ./... -v"))
+
+   (flow/with-step "Compile binaries"
+     (def compile-versions [{:label "macOS" :os "darwin" :arch "arm64"}
+                            {:label "windows-x64" :os "windows" :arch "amd64"}])
+     (doseq [{:keys [label os arch]} compile-versions]
+       (let [f (cond-> (str "bin/beholder-" version "-" label)
+                 (= os "windows")
+                 (str ".exe"))
+             cmd (str "env GOOS=" os
+                      " GOARCH=" arch
+                      " go build -v -o " f)]
+         (flow/with-step (str "Compiling: " f)
+           (flow/shell cmd)))))
+
+   (flow/with-step "Upload to Github"
+     (let [notes (file/content notes)
+           release (github/release version)]
+       (git/tag-create version-tag)
+       (git/tag-push version-tag "origin")
+
+       (github/release-create release {:body notes})
+       (github/release-upload release @compiled-files)))
+
+   (flow/with-step "Update homebrew tap"
+     (let [formula (github/with-repo "dhleong/homebrew-tap"
+                     (github/file "Formula/beholder.rb"))
+           tar-url (str "https://github.com/dhleong/beholder/archive/"
+                        version
+                        ".tar.gz")
+           tar-sha (sha256-hash (slurp-bytes tar-url))
+           contents (github/slurp formula)
+           updated-contents (-> contents
+                                (str/replace-first
+                                 #"url \"[^\"]+\""
+                                 (str "url \"" tar-url "\""))
+                                (str/replace-first
+                                 #"sha256 \"[^\"]+\""
+                                 (str "sha256 \"" tar-sha "\"")))
+           commit-message (str "Update for v" version)]
+
+       ; TODO: Better way to add these annotations
+       (flow/with-step (str "   url <- " tar-url))
+       (flow/with-step (str "sha256 <- " tar-url))
+
+       (github/spit formula {:message commit-message} updated-contents)))
+
+   (flow/summary "Done! Published " version)))
+
