@@ -75,7 +75,8 @@
                       " GOARCH=" arch
                       " go build -v -o " f)]
          (flow/with-step (str "Compiling: " f)
-           (flow/shell cmd)))))
+           (flow/shell cmd)
+           (swap! compiled-files conj f)))))
 
    (flow/with-step "Upload to Github"
      (let [notes (file/content notes)
