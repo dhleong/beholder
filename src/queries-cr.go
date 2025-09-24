@@ -12,7 +12,7 @@ func NewChallengeRatingQuery(cr string) *ChallengeRatingQuery {
 	return &ChallengeRatingQuery{cr}
 }
 
-var crQueryRegex *regexp.Regexp = regexp.MustCompile(`(?i)\s*CR([0-9]+)\s*`)
+var crQueryRegex *regexp.Regexp = regexp.MustCompile(`(?i)\s*CR([0-9/]+)\s*`)
 
 func ExtractChallengeRatingQueries(query string) (remaining string, extracted []Query) {
 	matches := crQueryRegex.FindAllStringSubmatch(query, -1)
