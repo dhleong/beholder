@@ -5,7 +5,7 @@ import (
 )
 
 // Version is the current version of the app
-const Version = "1.8.2"
+const Version = "1.9.0"
 
 const queryLimit int = 1024
 
