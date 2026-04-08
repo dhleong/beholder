@@ -21,7 +21,7 @@ func parseOptions() *options {
 Usage: beholder
 
 That's it! Just run the command and start typing to search for whatever
-you're curious about. Use <ctrl-k> and <ctrl-k> to scroll through
+you're curious about. Use <ctrl-k> and <ctrl-j> to scroll through
 results. If the information doesn't fit entirely in the info pane, you
 can focus on it by pressing <enter>.
 
