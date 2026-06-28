@@ -4,7 +4,6 @@ go 1.24.0
 
 require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
-	github.com/gdamore/tcell v1.4.0
 	github.com/gdamore/tcell/v2 v2.7.1
 	github.com/lucasb-eyer/go-colorful v1.2.0
 	github.com/mattn/go-runewidth v0.0.16
