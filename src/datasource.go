@@ -106,14 +106,14 @@ func (d *networkDataSource) GetEntities() ([]Entity, error) {
 		// request the remote file
 		resp, err := http.Get(d.URL)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to fetch network data source (%s): %w", d.URL, err)
 		}
 		defer resp.Body.Close()
 
 		// write the response body
 		_, err = io.Copy(out, resp.Body)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to save network data source (%s) to local cache (%s): %w", d.URL, d.localPath, err)
 		}
 	}
 
@@ -139,7 +139,7 @@ type mergeDataSource struct {
 }
 
 func (d *mergeDataSource) GetEntities() ([]Entity, error) {
-	all := make([]Entity, 0, 0)
+	all := make([]Entity, 0)
 
 	for _, s := range d.sources {
 		result, err := s.GetEntities()
