@@ -131,7 +131,11 @@ func (d *diskDataSource) GetEntities() ([]Entity, error) {
 	}
 	defer f.Close()
 
-	return ParseXML(bufio.NewReader(f))
+	entities, err := ParseXML(bufio.NewReader(f))
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse data source (%s): %w", d.localPath, err)
+	}
+	return entities, nil
 }
 
 type mergeDataSource struct {

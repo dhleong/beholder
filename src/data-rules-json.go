@@ -62,7 +62,12 @@ func (d *jsonRulesSource) GetEntities() ([]Entity, error) {
 	}
 	defer f.Close()
 
-	return parseRulesJSON(bufio.NewReader(f))
+	entities, err := parseRulesJSON(bufio.NewReader(f))
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse JSON Rules at %s: %w", d.localPath, err)
+	}
+
+	return entities, nil
 }
 
 func parseRulesJSON(reader *bufio.Reader) ([]Entity, error) {
